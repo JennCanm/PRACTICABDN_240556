@@ -1,5 +1,7 @@
 # Prácticas de la Asignatura de Base de Datos en la Nube
 ## Ingeniería en Tecnologías de la Información e Innovación Digital
+periodo: Septiembre -Diciembre 2026
+Autor: Jennifer Anel Canales Martinez
 
 ### Tabla de Prácticas de la Materia
 
