@@ -70,3 +70,16 @@ FROM tb_products;
 SELECT * 
 FROM vw_trazabilidad_productos 
 LIMIT 10;
+
+
+-- 12. visualizar todos los productos*/
+SELECT * FROM tb_products;
+
+-- 13. consulta para saber la trazabilidad de los productos*/
+SELECT * FROM vw_trazabilidad_productos ORDER BY operation_date DESC LIMIT 10;
+
+-- 14. consulta la trazabilidad de usuarios*/
+SELECT * FROM vw_trazabilidad_usuarios ORDER BY operation_date asc;
+
+-- 15. contabilidad cuantos productos por tabla hay por usuarios*/
+SELECT COUNT(*), vp.inserted_by FROM vw_trazabilidad_productos vp GROUP BY vp.inserted_by;
