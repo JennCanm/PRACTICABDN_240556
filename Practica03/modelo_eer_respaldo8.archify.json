@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "diagram_type": "erd",
+  "meta": {
+    "title": "Modelo EER - respaldo8.sql",
+    "subtitle": "9 tablas fisicas - 60 columnas - 9 restricciones FK declaradas - MySQL 8.0.46",
+    "locale": "es",
+    "output": "archify-output/modelo_eer_respaldo8_archify.html",
+    "quality_profile": "standard",
+    "visual_preset": "blueprint",
+    "animation": "trace"
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      36,
+      50
+    ],
+    "gapX": 110,
+    "gapY": 70
+  },
+  "entities": [
+    {
+      "id": "consulta_verificacion",
+      "label": "consulta_verificacion",
+      "sublabel": "3 registros verificados - 7 columnas",
+      "row": 0,
+      "col": 2,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int",
+          "key": "pk"
+        },
+        {
+          "name": "nick",
+          "type": "varchar(50)"
+        },
+        {
+          "name": "email",
+          "type": "varchar(100)"
+        },
+        {
+          "name": "inserted_by",
+          "type": "varchar(100)"
+        },
+        {
+          "name": "roles",
+          "type": "varchar(50)"
+        },
+        {
+          "name": "operation_description",
+          "type": "text"
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "id": "tb_carts",
+      "label": "tb_carts",
+      "sublabel": "0 registros verificados - 5 columnas",
+      "row": 0,
+      "col": 1,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "key": "pk"
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "key": [
+            "fk",
+            "uk"
+          ],
+          "references": "tb_users.id"
+        },
+        {
+          "name": "status",
+          "type": "bit(1)"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "id": "tb_categories",
+      "label": "tb_categories",
+      "sublabel": "100 registros verificados - 7 columnas",
+      "row": 2,
+      "col": 0,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "key": "pk"
+        },
+        {
+          "name": "name",
+          "type": "varchar(120)",
+          "key": "uk"
+        },
+        {
+          "name": "description",
+          "type": "text"
+        },
+        {
+          "name": "sup_id_category",
+          "type": "int unsigned",
+          "key": "fk",
+          "references": "tb_categories.id"
+        },
+        {
+          "name": "status",
+          "type": "bit(1)"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "id": "tb_logs",
+      "label": "tb_logs",
+      "sublabel": "210 registros verificados - 7 columnas",
+      "row": 2,
+      "col": 2,
+      "width": 420,
+      "attributes": [
+        {
+          "name": "ID",
+          "type": "int",
+          "key": "pk"
+        },
+        {
+          "name": "table_operation",
+          "type": "enum('Create','Read','Update','Delete')"
+        },
+        {
+          "name": "db_user",
+          "type": "varchar(80)"
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "table_description",
+          "type": "text"
+        },
+        {
+          "name": "operation_status",
+          "type": "bit(1)"
+        },
+        {
+          "name": "table_name",
+          "type": "varchar(80)"
+        }
+      ]
+    },
+    {
+      "id": "tb_products",
+      "label": "tb_products",
+      "sublabel": "5,010 registros verificados - 9 columnas",
+      "row": 1,
+      "col": 0,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "key": "pk"
+        },
+        {
+          "name": "SKU",
+          "type": "varchar(50)"
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)"
+        },
+        {
+          "name": "description",
+          "type": "text"
+        },
+        {
+          "name": "current_price",
+          "type": "decimal(10,2)"
+        },
+        {
+          "name": "current_stock",
+          "type": "int"
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)"
+        },
+        {
+          "name": "creation_date",
+          "type": "timestamp"
+        },
+        {
+          "name": "last_update",
+          "type": "timestamp"
+        }
+      ]
+    },
+    {
+      "id": "tb_users",
+      "label": "tb_users",
+      "sublabel": "9 registros verificados - 8 columnas",
+      "row": 0,
+      "col": 0,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "key": "pk"
+        },
+        {
+          "name": "email",
+          "type": "varchar(100)",
+          "key": "uk"
+        },
+        {
+          "name": "nick",
+          "type": "varchar(50)",
+          "key": "uk"
+        },
+        {
+          "name": "password",
+          "type": "varchar(255)"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        },
+        {
+          "name": "last_login",
+          "type": "datetime"
+        },
+        {
+          "name": "status",
+          "type": "bit(1)"
+        }
+      ]
+    },
+    {
+      "id": "tbd_products_categories",
+      "label": "tbd_products_categories",
+      "sublabel": "90 registros verificados - 5 columnas",
+      "row": 2,
+      "col": 1,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_products.id"
+        },
+        {
+          "name": "category_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_categories.id"
+        },
+        {
+          "name": "status",
+          "type": "int"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "id": "tbd_products_users_providers",
+      "label": "tbd_products_users_providers",
+      "sublabel": "0 registros verificados - 7 columnas",
+      "row": 1,
+      "col": 1,
+      "width": 430,
+      "attributes": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_users.id"
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_products.id"
+        },
+        {
+          "name": "type_ownership",
+          "type": "enum('Owner','Reseller','Distributor')"
+        },
+        {
+          "name": "status",
+          "type": "bit(1)"
+        },
+        {
+          "name": "available_date",
+          "type": "datetime"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "id": "tbd_users_wishlist_products",
+      "label": "tbd_users_wishlist_products",
+      "sublabel": "0 registros verificados - 5 columnas",
+      "row": 1,
+      "col": 2,
+      "width": 300,
+      "attributes": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_users.id"
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "key": [
+            "pk",
+            "fk"
+          ],
+          "references": "tb_products.id"
+        },
+        {
+          "name": "status",
+          "type": "bit(1)"
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime"
+        },
+        {
+          "name": "last_update",
+          "type": "datetime"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "fk_tb_carts_tb_carts_ibfk_1",
+      "from": "tb_carts",
+      "to": "tb_users",
+      "fromCardinality": "one",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": false,
+      "label": "user_ID - tb_carts_ibfk_1"
+    },
+    {
+      "id": "fk_tbd_products_categories_fk_pc_categories",
+      "from": "tbd_products_categories",
+      "to": "tb_categories",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "category_ID - fk_pc_categories"
+    },
+    {
+      "id": "fk_tbd_products_categories_fk_pc_products",
+      "from": "tbd_products_categories",
+      "to": "tb_products",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "product_ID - fk_pc_products"
+    },
+    {
+      "id": "fk_tbd_products_users_providers_fk_pup_products",
+      "from": "tbd_products_users_providers",
+      "to": "tb_products",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "product_ID - fk_pup_products"
+    },
+    {
+      "id": "fk_tbd_products_users_providers_fk_pup_users",
+      "from": "tbd_products_users_providers",
+      "to": "tb_users",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "user_ID - fk_pup_users"
+    },
+    {
+      "id": "fk_tbd_users_wishlist_products_fk_products3",
+      "from": "tbd_users_wishlist_products",
+      "to": "tb_products",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "product_ID - fk_products3"
+    },
+    {
+      "id": "fk_tbd_users_wishlist_products_fk_user2",
+      "from": "tbd_users_wishlist_products",
+      "to": "tb_users",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": false,
+      "toOptional": true,
+      "identifying": true,
+      "label": "user_ID - fk_user2"
+    },
+    {
+      "id": "inferred_1",
+      "from": "tb_logs",
+      "to": "tbd_products_categories",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "fromOptional": true,
+      "toOptional": true,
+      "identifying": false,
+      "variant": "dashed",
+      "label": "Inferida - FK no declarada"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Claves foraneas autorreferentes: tb_categories",
+      "items": [
+        "sup_id_category referencia tb_categories.id",
+        "Restricciones fk_categories_superior y fk_superior_category; mismo par de columnas",
+        "fk_categories_superior: ON DELETE SET NULL, ON UPDATE CASCADE; la otra usa las reglas predeterminadas del motor",
+        "Opcional porque sup_id_category permite NULL"
+      ]
+    }
+  ]
+}

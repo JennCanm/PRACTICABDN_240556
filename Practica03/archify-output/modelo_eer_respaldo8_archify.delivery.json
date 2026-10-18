@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "8b2147a8-ede2-4bf4-b843-88f8495ea973",
+  "status": "current",
+  "command": "deliver",
+  "type": "erd",
+  "input": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\modelo_eer_respaldo8.archify.json",
+  "output": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\archify-output\\modelo_eer_respaldo8_archify.html",
+  "specification": {
+    "sha256": "e3e36738c3edeb92e720bef436ce01aa5a323d02719de1e9134ea5abebabd314",
+    "bytes": 11607
+  },
+  "artifact": {
+    "sha256": "70c9cea5948d27d0bdce22a7d491e81ff5e531a679651ed23b74593e0462ab5f",
+    "bytes": 863226
+  }
+}

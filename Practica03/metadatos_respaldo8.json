@@ -1,0 +1,2498 @@
+{
+  "source": {
+    "file": "respaldo8.sql",
+    "path": "backups/respaldo8.sql",
+    "dialect": "MySQL dump 10.13; compatible/restaurado con MySQL Community Server 8.0.46",
+    "server_version": "8.0.46",
+    "database": "db_test",
+    "bytes": 1001433
+  },
+  "verification": {
+    "status": "verified",
+    "method": "Isolated restoration into a new temporary MySQL 8.0.46 datadir; SELECT COUNT(*) was executed for every restored physical table.",
+    "temporary_instance": "127.0.0.1:33316; isolated temporary datadir; db_test; not production.",
+    "dml_operations": {
+      "insert": 6,
+      "insert_ignore": 0,
+      "replace": 0,
+      "update": 0,
+      "delete": 0
+    },
+    "note": "Counts reflect the fully restored state, including trigger effects during data loading."
+  },
+  "summary": {
+    "physical_tables": 9,
+    "views": 5,
+    "columns": 60,
+    "verified_tables": 9,
+    "sum_of_rows_not_unique_entities": 5422,
+    "verified_foreign_key_constraints": 9,
+    "inferred_relations": 1,
+    "triggers": 12,
+    "unchecked_objects": 0
+  },
+  "tables": [
+    {
+      "name": "consulta_verificacion",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "extra": "auto_increment",
+          "table": "consulta_verificacion",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`id` int NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "consulta_verificacion",
+              "column": "id",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "consulta_verificacion",
+              "column": "id",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "nick",
+          "type": "varchar(50)",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`nick` varchar(50) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "email",
+          "type": "varchar(100)",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`email` varchar(100) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "inserted_by",
+          "type": "varchar(100)",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`inserted_by` varchar(100) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "roles",
+          "type": "varchar(50)",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "YES",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`roles` varchar(50) DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "operation_description",
+          "type": "text",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "text",
+          "generated": "",
+          "sql_definition": "`operation_description` text NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime",
+          "extra": "",
+          "table": "consulta_verificacion",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`operation_date` datetime NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 3,
+      "keys": [
+        {
+          "table": "consulta_verificacion",
+          "column": "id",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tb_carts",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "extra": "auto_increment",
+          "table": "tb_carts",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`ID` int unsigned NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_carts",
+              "column": "ID",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tb_carts",
+              "column": "ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tb_carts",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`user_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_carts",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "uk_cart_user",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "UNIQUE",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tb_carts",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "tb_carts_ibfk_1",
+              "delete_rule": "NO ACTION",
+              "update_rule": "NO ACTION",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_users",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "uk_cart_user",
+              "type": "BTREE",
+              "table": "tb_carts",
+              "column": "user_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tb_carts",
+          "charset": null,
+          "comment": "",
+          "default": "b'1'",
+          "ordinal": 3,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`status` bit(1) DEFAULT b'1'",
+          "default_sql": "b'1'",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tb_carts",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "on update CURRENT_TIMESTAMP",
+          "table": "tb_carts",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 0,
+      "keys": [
+        {
+          "table": "tb_carts",
+          "column": "ID",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_carts",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "uk_cart_user",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "UNIQUE",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_carts",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "tb_carts_ibfk_1",
+          "delete_rule": "NO ACTION",
+          "update_rule": "NO ACTION",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_users",
+          "referenced_column": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "uk_cart_user",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "user_ID"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tb_categories",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "extra": "auto_increment",
+          "table": "tb_categories",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`id` int unsigned NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_categories",
+              "column": "id",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tb_categories",
+              "column": "id",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "name",
+          "type": "varchar(120)",
+          "extra": "",
+          "table": "tb_categories",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`name` varchar(120) NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_categories",
+              "column": "name",
+              "ordinal": 1,
+              "constraint": "name",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "UNIQUE",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "name",
+              "type": "BTREE",
+              "table": "tb_categories",
+              "column": "name",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "extra": "",
+          "table": "tb_categories",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "YES",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "text",
+          "generated": "",
+          "sql_definition": "`description` text",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "sup_id_category",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tb_categories",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`sup_id_category` int unsigned DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [
+            {
+              "table": "tb_categories",
+              "column": "sup_id_category",
+              "ordinal": 1,
+              "constraint": "fk_categories_superior",
+              "delete_rule": "SET NULL",
+              "update_rule": "CASCADE",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_categories",
+              "referenced_column": "id"
+            },
+            {
+              "table": "tb_categories",
+              "column": "sup_id_category",
+              "ordinal": 1,
+              "constraint": "fk_superior_category",
+              "delete_rule": "NO ACTION",
+              "update_rule": "NO ACTION",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_categories",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "fk_superior_category",
+              "type": "BTREE",
+              "table": "tb_categories",
+              "column": "sup_id_category",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tb_categories",
+          "charset": null,
+          "comment": "",
+          "default": "b'1'",
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`status` bit(1) NOT NULL DEFAULT b'1'",
+          "default_sql": "b'1'",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tb_categories",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 6,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
+          "table": "tb_categories",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 7,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 100,
+      "keys": [
+        {
+          "table": "tb_categories",
+          "column": "name",
+          "ordinal": 1,
+          "constraint": "name",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "UNIQUE",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_categories",
+          "column": "id",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_categories",
+          "column": "sup_id_category",
+          "ordinal": 1,
+          "constraint": "fk_categories_superior",
+          "delete_rule": "SET NULL",
+          "update_rule": "CASCADE",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_categories",
+          "referenced_column": "id"
+        },
+        {
+          "table": "tb_categories",
+          "column": "sup_id_category",
+          "ordinal": 1,
+          "constraint": "fk_superior_category",
+          "delete_rule": "NO ACTION",
+          "update_rule": "NO ACTION",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_categories",
+          "referenced_column": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "fk_superior_category",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "sup_id_category"
+          ]
+        },
+        {
+          "name": "name",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tb_logs",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int",
+          "extra": "auto_increment",
+          "table": "tb_logs",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`ID` int NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_logs",
+              "column": "ID",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tb_logs",
+              "column": "ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "table_operation",
+          "type": "enum('Create','Read','Update','Delete')",
+          "extra": "",
+          "table": "tb_logs",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "YES",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "enum",
+          "generated": "",
+          "sql_definition": "`table_operation` enum('Create','Read','Update','Delete') DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": [
+            {
+              "name": "idx_logs_perf",
+              "type": "BTREE",
+              "table": "tb_logs",
+              "column": "table_operation",
+              "comment": "",
+              "sequence": 2,
+              "non_unique": 1
+            },
+            {
+              "name": "idx_logs_table_op",
+              "type": "BTREE",
+              "table": "tb_logs",
+              "column": "table_operation",
+              "comment": "",
+              "sequence": 2,
+              "non_unique": 1
+            }
+          ]
+        },
+        {
+          "name": "db_user",
+          "type": "varchar(80)",
+          "extra": "",
+          "table": "tb_logs",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`db_user` varchar(80) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tb_logs",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`operation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "table_description",
+          "type": "text",
+          "extra": "",
+          "table": "tb_logs",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "text",
+          "generated": "",
+          "sql_definition": "`table_description` text NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "operation_status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tb_logs",
+          "charset": null,
+          "comment": "",
+          "default": "b'1'",
+          "ordinal": 6,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`operation_status` bit(1) DEFAULT b'1'",
+          "default_sql": "b'1'",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "table_name",
+          "type": "varchar(80)",
+          "extra": "",
+          "table": "tb_logs",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`table_name` varchar(80) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": [
+            {
+              "name": "idx_logs_perf",
+              "type": "BTREE",
+              "table": "tb_logs",
+              "column": "table_name",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            },
+            {
+              "name": "idx_logs_table_op",
+              "type": "BTREE",
+              "table": "tb_logs",
+              "column": "table_name",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            }
+          ]
+        }
+      ],
+      "row_count": 210,
+      "keys": [
+        {
+          "table": "tb_logs",
+          "column": "ID",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "idx_logs_perf",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "table_name",
+            "table_operation"
+          ]
+        },
+        {
+          "name": "idx_logs_table_op",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "table_name",
+            "table_operation"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "ID"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tb_products",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "extra": "auto_increment",
+          "table": "tb_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`id` int unsigned NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_products",
+              "column": "id",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tb_products",
+              "column": "id",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "SKU",
+          "type": "varchar(50)",
+          "extra": "",
+          "table": "tb_products",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`SKU` varchar(50) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "extra": "",
+          "table": "tb_products",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`name` varchar(100) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "extra": "",
+          "table": "tb_products",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "YES",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "text",
+          "generated": "",
+          "sql_definition": "`description` text",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "current_price",
+          "type": "decimal(10,2)",
+          "extra": "",
+          "table": "tb_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "decimal",
+          "generated": "",
+          "sql_definition": "`current_price` decimal(10,2) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "current_stock",
+          "type": "int",
+          "extra": "",
+          "table": "tb_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`current_stock` int NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)",
+          "extra": "",
+          "table": "tb_products",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`status` varchar(20) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "timestamp",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tb_products",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 8,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "timestamp",
+          "generated": "",
+          "sql_definition": "`creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "timestamp",
+          "extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
+          "table": "tb_products",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 9,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "timestamp",
+          "generated": "",
+          "sql_definition": "`last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 5010,
+      "keys": [
+        {
+          "table": "tb_products",
+          "column": "id",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tb_users",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "extra": "auto_increment",
+          "table": "tb_users",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`id` int unsigned NOT NULL AUTO_INCREMENT",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_users",
+              "column": "id",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tb_users",
+              "column": "id",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "email",
+          "type": "varchar(100)",
+          "extra": "",
+          "table": "tb_users",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`email` varchar(100) NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_users",
+              "column": "email",
+              "ordinal": 1,
+              "constraint": "email",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "UNIQUE",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "email",
+              "type": "BTREE",
+              "table": "tb_users",
+              "column": "email",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "nick",
+          "type": "varchar(50)",
+          "extra": "",
+          "table": "tb_users",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`nick` varchar(50) NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tb_users",
+              "column": "nick",
+              "ordinal": 1,
+              "constraint": "nick",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "UNIQUE",
+              "referenced_table": null,
+              "referenced_column": null
+            }
+          ],
+          "indexes": [
+            {
+              "name": "nick",
+              "type": "BTREE",
+              "table": "tb_users",
+              "column": "nick",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "password",
+          "type": "varchar(255)",
+          "extra": "",
+          "table": "tb_users",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "varchar",
+          "generated": "",
+          "sql_definition": "`password` varchar(255) NOT NULL",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tb_users",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "",
+          "table": "tb_users",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_login",
+          "type": "datetime",
+          "extra": "",
+          "table": "tb_users",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_login` datetime DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tb_users",
+          "charset": null,
+          "comment": "",
+          "default": "b'1'",
+          "ordinal": 8,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`status` bit(1) DEFAULT b'1'",
+          "default_sql": "b'1'",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 9,
+      "keys": [
+        {
+          "table": "tb_users",
+          "column": "email",
+          "ordinal": 1,
+          "constraint": "email",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "UNIQUE",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_users",
+          "column": "nick",
+          "ordinal": 1,
+          "constraint": "nick",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "UNIQUE",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tb_users",
+          "column": "id",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "email",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "nick",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "nick"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tbd_products_categories",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_products_categories",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`product_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_products_categories",
+              "column": "product_ID",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_products_categories",
+              "column": "product_ID",
+              "ordinal": 1,
+              "constraint": "fk_pc_products",
+              "delete_rule": "CASCADE",
+              "update_rule": "CASCADE",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_products",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_products_categories",
+              "column": "product_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "category_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_products_categories",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`category_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_products_categories",
+              "column": "category_ID",
+              "ordinal": 2,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_products_categories",
+              "column": "category_ID",
+              "ordinal": 1,
+              "constraint": "fk_pc_categories",
+              "delete_rule": "CASCADE",
+              "update_rule": "CASCADE",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_categories",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "fk_pc_categories",
+              "type": "BTREE",
+              "table": "tbd_products_categories",
+              "column": "category_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            },
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_products_categories",
+              "column": "category_ID",
+              "comment": "",
+              "sequence": 2,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "extra": "",
+          "table": "tbd_products_categories",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`status` int DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tbd_products_categories",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
+          "table": "tbd_products_categories",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 90,
+      "keys": [
+        {
+          "table": "tbd_products_categories",
+          "column": "product_ID",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_products_categories",
+          "column": "category_ID",
+          "ordinal": 2,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_products_categories",
+          "column": "category_ID",
+          "ordinal": 1,
+          "constraint": "fk_pc_categories",
+          "delete_rule": "CASCADE",
+          "update_rule": "CASCADE",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_categories",
+          "referenced_column": "id"
+        },
+        {
+          "table": "tbd_products_categories",
+          "column": "product_ID",
+          "ordinal": 1,
+          "constraint": "fk_pc_products",
+          "delete_rule": "CASCADE",
+          "update_rule": "CASCADE",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_products",
+          "referenced_column": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "fk_pc_categories",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "category_ID"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "product_ID",
+            "category_ID"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tbd_products_users_providers",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`user_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_products_users_providers",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_products_users_providers",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "fk_pup_users",
+              "delete_rule": "CASCADE",
+              "update_rule": "CASCADE",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_users",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_products_users_providers",
+              "column": "user_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`product_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_products_users_providers",
+              "column": "product_ID",
+              "ordinal": 2,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_products_users_providers",
+              "column": "product_ID",
+              "ordinal": 1,
+              "constraint": "fk_pup_products",
+              "delete_rule": "CASCADE",
+              "update_rule": "CASCADE",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_products",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "fk_pup_products",
+              "type": "BTREE",
+              "table": "tbd_products_users_providers",
+              "column": "product_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            },
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_products_users_providers",
+              "column": "product_ID",
+              "comment": "",
+              "sequence": 2,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "type_ownership",
+          "type": "enum('Owner','Reseller','Distributor')",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": "utf8mb4",
+          "comment": "",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "YES",
+          "collation": "utf8mb4_0900_ai_ci",
+          "data_type": "enum",
+          "generated": "",
+          "sql_definition": "`type_ownership` enum('Owner','Reseller','Distributor') DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`status` bit(1) DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "available_date",
+          "type": "datetime",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`available_date` datetime DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "",
+          "table": "tbd_products_users_providers",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "YES",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime DEFAULT NULL",
+          "default_sql": "NULL",
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 0,
+      "keys": [
+        {
+          "table": "tbd_products_users_providers",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_products_users_providers",
+          "column": "product_ID",
+          "ordinal": 2,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_products_users_providers",
+          "column": "product_ID",
+          "ordinal": 1,
+          "constraint": "fk_pup_products",
+          "delete_rule": "CASCADE",
+          "update_rule": "CASCADE",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_products",
+          "referenced_column": "id"
+        },
+        {
+          "table": "tbd_products_users_providers",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "fk_pup_users",
+          "delete_rule": "CASCADE",
+          "update_rule": "CASCADE",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_users",
+          "referenced_column": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "fk_pup_products",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "product_ID"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "user_ID",
+            "product_ID"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tbd_users_wishlist_products",
+      "engine": "InnoDB",
+      "comment": "",
+      "collation": "utf8mb4_0900_ai_ci",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_users_wishlist_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`user_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_users_wishlist_products",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_users_wishlist_products",
+              "column": "user_ID",
+              "ordinal": 1,
+              "constraint": "fk_user2",
+              "delete_rule": "NO ACTION",
+              "update_rule": "NO ACTION",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_users",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_users_wishlist_products",
+              "column": "user_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "extra": "",
+          "table": "tbd_users_wishlist_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "int",
+          "generated": "",
+          "sql_definition": "`product_ID` int unsigned NOT NULL",
+          "default_sql": null,
+          "constraints": [
+            {
+              "table": "tbd_users_wishlist_products",
+              "column": "product_ID",
+              "ordinal": 2,
+              "constraint": "PRIMARY",
+              "delete_rule": null,
+              "update_rule": null,
+              "constraint_type": "PRIMARY KEY",
+              "referenced_table": null,
+              "referenced_column": null
+            },
+            {
+              "table": "tbd_users_wishlist_products",
+              "column": "product_ID",
+              "ordinal": 1,
+              "constraint": "fk_products3",
+              "delete_rule": "NO ACTION",
+              "update_rule": "NO ACTION",
+              "constraint_type": "FOREIGN KEY",
+              "referenced_table": "tb_products",
+              "referenced_column": "id"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "fk_products3",
+              "type": "BTREE",
+              "table": "tbd_users_wishlist_products",
+              "column": "product_ID",
+              "comment": "",
+              "sequence": 1,
+              "non_unique": 1
+            },
+            {
+              "name": "PRIMARY",
+              "type": "BTREE",
+              "table": "tbd_users_wishlist_products",
+              "column": "product_ID",
+              "comment": "",
+              "sequence": 2,
+              "non_unique": 0
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "extra": "",
+          "table": "tbd_users_wishlist_products",
+          "charset": null,
+          "comment": "",
+          "default": "b'1'",
+          "ordinal": 3,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "bit",
+          "generated": "",
+          "sql_definition": "`status` bit(1) NOT NULL DEFAULT b'1'",
+          "default_sql": "b'1'",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "extra": "DEFAULT_GENERATED",
+          "table": "tbd_users_wishlist_products",
+          "charset": null,
+          "comment": "",
+          "default": "CURRENT_TIMESTAMP",
+          "ordinal": 4,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "default_sql": "CURRENT_TIMESTAMP",
+          "constraints": [],
+          "indexes": []
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "extra": "on update CURRENT_TIMESTAMP",
+          "table": "tbd_users_wishlist_products",
+          "charset": null,
+          "comment": "",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO",
+          "collation": null,
+          "data_type": "datetime",
+          "generated": "",
+          "sql_definition": "`last_update` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "default_sql": null,
+          "constraints": [],
+          "indexes": []
+        }
+      ],
+      "row_count": 0,
+      "keys": [
+        {
+          "table": "tbd_users_wishlist_products",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_users_wishlist_products",
+          "column": "product_ID",
+          "ordinal": 2,
+          "constraint": "PRIMARY",
+          "delete_rule": null,
+          "update_rule": null,
+          "constraint_type": "PRIMARY KEY",
+          "referenced_table": null,
+          "referenced_column": null
+        },
+        {
+          "table": "tbd_users_wishlist_products",
+          "column": "product_ID",
+          "ordinal": 1,
+          "constraint": "fk_products3",
+          "delete_rule": "NO ACTION",
+          "update_rule": "NO ACTION",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_products",
+          "referenced_column": "id"
+        },
+        {
+          "table": "tbd_users_wishlist_products",
+          "column": "user_ID",
+          "ordinal": 1,
+          "constraint": "fk_user2",
+          "delete_rule": "NO ACTION",
+          "update_rule": "NO ACTION",
+          "constraint_type": "FOREIGN KEY",
+          "referenced_table": "tb_users",
+          "referenced_column": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "fk_products3",
+          "unique": false,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "product_ID"
+          ]
+        },
+        {
+          "name": "PRIMARY",
+          "unique": true,
+          "type": "BTREE",
+          "comment": "",
+          "columns": [
+            "user_ID",
+            "product_ID"
+          ]
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "name": "vw_total_products_by_category",
+      "definition": "with recursive `category_tree` as (select `c`.`id` AS `ID`,`c`.`name` AS `name`,`c`.`sup_id_category` AS `sup_id_category`,`c`.`status` AS `status`,cast(`c`.`name` as char(1000) charset utf8mb4) AS `category_path`,1 AS `category_level` from `db_test`.`tb_categories` `c` where (`c`.`sup_id_category` is null) union all select `c`.`id` AS `ID`,`c`.`name` AS `name`,`c`.`sup_id_category` AS `sup_id_category`,`c`.`status` AS `status`,concat(`ct`.`category_path`,' ? ',`c`.`name`) AS `category_path`,(`ct`.`category_level` + 1) AS `category_level` from (`db_test`.`tb_categories` `c` join `category_tree` `ct` on((`c`.`sup_id_category` = `ct`.`ID`)))), `category_totals` as (select `ct`.`ID` AS `category_ID`,`ct`.`category_path` AS `category_path`,`ct`.`category_level` AS `category_level`,count(distinct `pc`.`product_ID`) AS `total_products`,count(distinct (case when (`p`.`status` = 0x01) then `p`.`id` end)) AS `total_active_products`,count(distinct (case when (`p`.`status` = 0x00) then `p`.`id` end)) AS `total_inactive_products` from ((`category_tree` `ct` left join `db_test`.`tbd_products_categories` `pc` on(((`pc`.`category_ID` = `ct`.`ID`) and (`pc`.`status` = 0x01)))) left join `db_test`.`tb_products` `p` on((`p`.`id` = `pc`.`product_ID`))) group by `ct`.`ID`,`ct`.`category_path`,`ct`.`category_level`), `uncategorized` as (select count(0) AS `total_uncategorized_products`,sum((case when (`p`.`status` = 0x01) then 1 else 0 end)) AS `total_active_products`,sum((case when (`p`.`status` = 0x00) then 1 else 0 end)) AS `total_inactive_products` from `db_test`.`tb_products` `p` where exists(select 1 from `db_test`.`tbd_products_categories` `pc` where ((`pc`.`product_ID` = `p`.`id`) and (`pc`.`status` = 0x01))) is false) select `ct`.`category_ID` AS `category_ID`,`ct`.`category_path` AS `category_path`,`ct`.`category_level` AS `category_level`,`ct`.`total_products` AS `total_products`,`ct`.`total_active_products` AS `total_active_products`,`ct`.`total_inactive_products` AS `total_inactive_products`,0 AS `total_uncategorized_products` from `category_totals` `ct` union all select NULL AS `category_ID`,'Sin categor�a' AS `category_path`,0 AS `category_level`,`u`.`total_uncategorized_products` AS `total_products`,`u`.`total_active_products` AS `total_active_products`,`u`.`total_inactive_products` AS `total_inactive_products`,`u`.`total_uncategorized_products` AS `total_uncategorized_products` from `uncategorized` `u`",
+      "check_option": "NONE",
+      "is_updatable": "NO",
+      "security_type": "DEFINER"
+    },
+    {
+      "name": "vw_trazabilidad_categorias",
+      "definition": "select `c`.`id` AS `ID`,`c`.`name` AS `category_name`,`c`.`description` AS `description`,`c`.`sup_id_category` AS `superior_category_id`,`c`.`status` AS `status`,`l`.`db_user` AS `inserted_by`,(case when (lower(`l`.`db_user`) like '%dara.gomez%') then 'support' when (lower(`l`.`db_user`) like '%jennifer.canales%') then 'superadmin' when (lower(`l`.`db_user`) like '%marco.ramirez%') then 'admin' when (lower(`l`.`db_user`) like '%dorian.barrios%') then 'seller' when (lower(`l`.`db_user`) like '%gadiel.bobadilla%') then 'seller' when (lower(`l`.`db_user`) like '%root%') then 'superadmin' else coalesce((select `re`.`TO_USER` from `mysql`.`role_edges` `re` where (lower(`re`.`FROM_USER`) = lower(substring_index(`l`.`db_user`,'@',1))) limit 1),'Sin roles asignados') end) AS `roles`,`l`.`table_description` AS `table_description`,`l`.`operation_date` AS `operation_date` from (`db_test`.`tb_categories` `c` left join `db_test`.`tb_logs` `l` on(((`l`.`table_name` = 'tb_categories') and (`l`.`table_operation` = 'Create') and (`l`.`table_description` like concat('%Categor�a creada: \"',`c`.`name`,'\"%'))))) order by `c`.`id`",
+      "check_option": "NONE",
+      "is_updatable": "NO",
+      "security_type": "DEFINER"
+    },
+    {
+      "name": "vw_trazabilidad_categorizacion_productos",
+      "definition": "select `pc`.`product_ID` AS `ID`,`p`.`name` AS `product_name`,`c`.`name` AS `category_name`,`pc`.`status` AS `status`,`l`.`db_user` AS `inserted_by`,(select `r`.`FROM_USER` from `mysql`.`role_edges` `r` where (`r`.`TO_USER` = substring_index(`l`.`db_user`,'@',1)) limit 1) AS `roles`,`l`.`table_description` AS `table_description`,`l`.`operation_date` AS `operation_date` from (((`db_test`.`tbd_products_categories` `pc` join `db_test`.`tb_products` `p` on((`pc`.`product_ID` = `p`.`id`))) join `db_test`.`tb_categories` `c` on((`pc`.`category_ID` = `c`.`id`))) join `db_test`.`tb_logs` `l` on(((`l`.`table_name` = 'tbd_products_categories') and (`l`.`table_description` like concat('%ID=',`pc`.`product_ID`,', Category_ID=',`pc`.`category_ID`,'%')))))",
+      "check_option": "NONE",
+      "is_updatable": "YES",
+      "security_type": "DEFINER"
+    },
+    {
+      "name": "vw_trazabilidad_productos",
+      "definition": "select `p`.`id` AS `id`,`p`.`SKU` AS `sku`,`p`.`name` AS `name`,`p`.`description` AS `description`,`p`.`current_price` AS `current_price`,`p`.`current_stock` AS `current_stock`,`p`.`status` AS `status`,coalesce(`l`.`db_user`,'Sin registro') AS `inserted_by`,coalesce(group_concat(distinct `re`.`FROM_USER` order by `re`.`FROM_USER` ASC separator ', '),'Sin rol') AS `roles`,coalesce(`l`.`table_description`,'Sin registro') AS `operation_description`,`l`.`operation_date` AS `operation_date` from ((`db_test`.`tb_products` `p` left join (select `db_test`.`tb_logs`.`db_user` AS `db_user`,`db_test`.`tb_logs`.`table_description` AS `table_description`,`db_test`.`tb_logs`.`operation_date` AS `operation_date`,cast(regexp_substr(`db_test`.`tb_logs`.`table_description`,'[0-9]+') as unsigned) AS `target_id` from `db_test`.`tb_logs` where ((`db_test`.`tb_logs`.`table_name` = 'tb_products') and (`db_test`.`tb_logs`.`table_operation` in ('Create','INSERT')))) `l` on((`p`.`id` = `l`.`target_id`))) left join `mysql`.`role_edges` `re` on((lower(`re`.`TO_USER`) = lower(substring_index(`l`.`db_user`,'@',1))))) group by `p`.`id`,`p`.`SKU`,`p`.`name`,`p`.`description`,`p`.`current_price`,`p`.`current_stock`,`p`.`status`,`l`.`db_user`,`l`.`table_description`,`l`.`operation_date`",
+      "check_option": "NONE",
+      "is_updatable": "NO",
+      "security_type": "DEFINER"
+    },
+    {
+      "name": "vw_trazabilidad_usuarios",
+      "definition": "select `u`.`id` AS `ID`,`u`.`nick` AS `nick`,`u`.`email` AS `email`,`u`.`status` AS `status`,`b`.`db_user` AS `inserted_by`,coalesce(group_concat(distinct `re`.`FROM_USER` order by `re`.`FROM_USER` ASC separator ', '),'Sin roles asignados') AS `roles`,`b`.`table_description` AS `table_description`,`b`.`operation_date` AS `operation_date` from ((`db_test`.`tb_users` `u` left join `db_test`.`tb_logs` `b` on((((`b`.`table_description` like concat('%',`u`.`nick`,'%')) or (`b`.`table_description` like concat('%',`u`.`email`,'%')) or (`b`.`table_description` like concat('%ID=',`u`.`id`,'%'))) and (`b`.`table_name` = 'tb_users') and (`b`.`table_operation` in ('Create','INSERT'))))) left join `mysql`.`role_edges` `re` on((`re`.`TO_USER` = substring_index(`b`.`db_user`,'@',1)))) group by `u`.`id`,`u`.`nick`,`u`.`email`,`u`.`status`,`b`.`db_user`,`b`.`table_description`,`b`.`operation_date` order by `b`.`operation_date` desc",
+      "check_option": "NONE",
+      "is_updatable": "NO",
+      "security_type": "DEFINER"
+    }
+  ],
+  "foreign_keys": [
+    {
+      "table": "tb_carts",
+      "name": "tb_carts_ibfk_1",
+      "target": "tb_users",
+      "columns": [
+        {
+          "column": "user_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "NO ACTION",
+      "delete_rule": "NO ACTION",
+      "source_unique": true,
+      "source_optional": false
+    },
+    {
+      "table": "tb_categories",
+      "name": "fk_categories_superior",
+      "target": "tb_categories",
+      "columns": [
+        {
+          "column": "sup_id_category",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "CASCADE",
+      "delete_rule": "SET NULL",
+      "source_unique": false,
+      "source_optional": true
+    },
+    {
+      "table": "tb_categories",
+      "name": "fk_superior_category",
+      "target": "tb_categories",
+      "columns": [
+        {
+          "column": "sup_id_category",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "NO ACTION",
+      "delete_rule": "NO ACTION",
+      "source_unique": false,
+      "source_optional": true
+    },
+    {
+      "table": "tbd_products_categories",
+      "name": "fk_pc_categories",
+      "target": "tb_categories",
+      "columns": [
+        {
+          "column": "category_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "CASCADE",
+      "delete_rule": "CASCADE",
+      "source_unique": false,
+      "source_optional": false
+    },
+    {
+      "table": "tbd_products_categories",
+      "name": "fk_pc_products",
+      "target": "tb_products",
+      "columns": [
+        {
+          "column": "product_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "CASCADE",
+      "delete_rule": "CASCADE",
+      "source_unique": false,
+      "source_optional": false
+    },
+    {
+      "table": "tbd_products_users_providers",
+      "name": "fk_pup_products",
+      "target": "tb_products",
+      "columns": [
+        {
+          "column": "product_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "CASCADE",
+      "delete_rule": "CASCADE",
+      "source_unique": false,
+      "source_optional": false
+    },
+    {
+      "table": "tbd_products_users_providers",
+      "name": "fk_pup_users",
+      "target": "tb_users",
+      "columns": [
+        {
+          "column": "user_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "CASCADE",
+      "delete_rule": "CASCADE",
+      "source_unique": false,
+      "source_optional": false
+    },
+    {
+      "table": "tbd_users_wishlist_products",
+      "name": "fk_products3",
+      "target": "tb_products",
+      "columns": [
+        {
+          "column": "product_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "NO ACTION",
+      "delete_rule": "NO ACTION",
+      "source_unique": false,
+      "source_optional": false
+    },
+    {
+      "table": "tbd_users_wishlist_products",
+      "name": "fk_user2",
+      "target": "tb_users",
+      "columns": [
+        {
+          "column": "user_ID",
+          "referenced_column": "id",
+          "ordinal": 1
+        }
+      ],
+      "update_rule": "NO ACTION",
+      "delete_rule": "NO ACTION",
+      "source_unique": false,
+      "source_optional": false
+    }
+  ],
+  "inferred_relations": [
+    {
+      "source_table": "tb_logs",
+      "source_column": "table_name",
+      "target_table": "tbd_products_categories",
+      "target_column": null,
+      "evidence": "El conjunto restaurado de tb_logs contiene table_name = tbd_products_categories; los triggers asociados generan estos registros. No existe FK declarada."
+    }
+  ],
+  "triggers": [
+    {
+      "name": "trg_tbc_categories_after_delete",
+      "event": "DELETE",
+      "table": "tb_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Delete', USER(), NOW(), CONCAT('Categor�a eliminada: \"', OLD.name, '\". ID=', OLD.id), 1);\nEND"
+    },
+    {
+      "name": "trg_tbc_categories_after_insert",
+      "event": "INSERT",
+      "table": "tb_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Create', USER(), NOW(), CONCAT('Categor�a creada: \"', NEW.name, '\". ID=', NEW.id), 1);\nEND"
+    },
+    {
+      "name": "trg_tbc_categories_after_update",
+      "event": "UPDATE",
+      "table": "tb_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Update', USER(), NOW(), CONCAT('Categor�a actualizada: \"', NEW.name, '\". ID=', NEW.id), 1);\nEND"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_delete",
+      "event": "DELETE",
+      "table": "tbd_products_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Delete', USER(), NOW(), CONCAT('Categorizaci�n eliminada. ID=', OLD.product_ID, ', Category_ID=', OLD.category_ID), 1);\nEND"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_insert",
+      "event": "INSERT",
+      "table": "tbd_products_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Create', USER(), NOW(), CONCAT('Categorizaci�n creada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\nEND"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_update",
+      "event": "UPDATE",
+      "table": "tbd_products_categories",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Update', USER(), NOW(), CONCAT('Categorizaci�n actualizada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\nEND"
+    },
+    {
+      "name": "trq_products_after_delete",
+      "event": "DELETE",
+      "table": "tb_products",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Delete', USER(), NOW(), CONCAT('Producto eliminado. ID=', OLD.id, ', SKU=', OLD.sku), 1);\nEND"
+    },
+    {
+      "name": "trq_products_after_insert",
+      "event": "INSERT",
+      "table": "tb_products",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Create', USER(), NOW(), CONCAT('Producto creado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\nEND"
+    },
+    {
+      "name": "trq_products_after_update",
+      "event": "UPDATE",
+      "table": "tb_products",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Update', USER(), NOW(), CONCAT('Producto actualizado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\nEND"
+    },
+    {
+      "name": "trq_users_after_delete",
+      "event": "DELETE",
+      "table": "tb_users",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Delete', USER(), NOW(), CONCAT('Usuario eliminado. ID=', OLD.id, ', email=', OLD.email), 1);\nEND"
+    },
+    {
+      "name": "trq_users_after_insert",
+      "event": "INSERT",
+      "table": "tb_users",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Create', USER(), NOW(), CONCAT('Usuario creado. ID=', NEW.id, ', email=', NEW.email), 1);\nEND"
+    },
+    {
+      "name": "trq_users_after_update",
+      "event": "UPDATE",
+      "table": "tb_users",
+      "timing": "AFTER",
+      "statement": "BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Update', USER(), NOW(), CONCAT('Usuario actualizado. ID=', NEW.id, ', email=', NEW.email), 1);\nEND"
+    }
+  ],
+  "anomalies": [
+    {
+      "object": "tb_categories",
+      "detail": "Two declared foreign key constraints on tb_categories.sup_id_category reference tb_categories.id (fk_categories_superior and fk_superior_category). Both are preserved; the second constraint shares its name with a KEY index."
+    }
+  ],
+  "classification": {
+    "note": "No specialization or generalization is declared. Tables named tbd_* have composite primary keys with foreign keys and are classified structurally as associative. Other EER classifications remain undetermined without evidence."
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "erd",
+  "quality": "standard",
+  "specification": {
+    "path": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\modelo_eer_respaldo8.archify.json",
+    "sha256": "e3e36738c3edeb92e720bef436ce01aa5a323d02719de1e9134ea5abebabd314",
+    "bytes": 11607
+  },
+  "artifact": {
+    "path": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\archify-output\\modelo_eer_respaldo8_archify.html",
+    "sha256": "70c9cea5948d27d0bdce22a7d491e81ff5e531a679651ed23b74593e0462ab5f",
+    "bytes": 863226
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\archify-output\\review-2\\modelo_eer_respaldo8_archify.finalize.json",
+    "summaryReceipt": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\archify-output\\review-2\\modelo_eer_respaldo8_archify.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\jenca\\OneDrive\\Documentos\\PRACTICABDN_240556\\Practica03\\archify-output\\review-2\\modelo_eer_respaldo8_archify.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.1.0",
+    "availableVersion": "3.1.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-16T06:55:22.194Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 11477,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 2
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "fk_tbd_users_wishlist_products_fk_products3",
+            "from": "tbd_users_wishlist_products",
+            "to": "tb_products",
+            "label": "product_ID - fk_products3",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "bends": 4,
+          "stretch": 1.223
+        },
+        {
+          "relationship": {
+            "id": "fk_tbd_users_wishlist_products_fk_user2",
+            "from": "tbd_users_wishlist_products",
+            "to": "tb_users",
+            "label": "user_ID - fk_user2",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "bends": 4,
+          "stretch": 1
+        }
+      ],
+      "truncated": false
+    },
+    "repair": "Advisory only: this mode places or routes these relationships itself. Report them; do not remove relationships or meaning to reduce crossings."
+  }
+}
