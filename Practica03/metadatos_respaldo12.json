@@ -1,0 +1,3532 @@
+{
+  "source_file": "respaldo12.sql",
+  "source_path": "backups/respaldo12.sql",
+  "dialect": "MySQL 8.0.36 (mysqldump 10.13)",
+  "database": "db_test",
+  "summary": {
+    "physical_tables": 17,
+    "views": 18,
+    "columns": 136,
+    "verified_foreign_keys": 22,
+    "confirmed_rows": 55505
+  },
+  "tables": [
+    {
+      "name": "tb_buyer_orders",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "seller_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "tb_buyer_orders_ibfk_1"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal(12,2)",
+          "nullable": false,
+          "default": "'0.00'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(12,2) NOT NULL DEFAULT '0.00'",
+          "key_roles": [],
+          "business_description": "Importe asociado al registro."
+        },
+        {
+          "name": "shipping_cost",
+          "type": "decimal(12,2)",
+          "nullable": false,
+          "default": "'0.00'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(12,2) NOT NULL DEFAULT '0.00'",
+          "key_roles": [],
+          "business_description": "Importe asociado al registro."
+        },
+        {
+          "name": "fulfillment_status",
+          "type": "enum('Pending','Accepted','Preparing','Sent','Delivered','Canceled','Returned')",
+          "nullable": false,
+          "default": "'Pending'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "enum_values": [
+            "Pending",
+            "Accepted",
+            "Preparing",
+            "Sent",
+            "Delivered",
+            "Canceled",
+            "Returned"
+          ],
+          "raw": "enum('Pending','Accepted','Preparing','Sent','Delivered','Canceled','Returned') NOT NULL DEFAULT 'Pending'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "seller_ID",
+          "type": "KEY",
+          "columns": [
+            "seller_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "tb_buyer_orders_ibfk_1",
+          "columns": [
+            "seller_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Pedidos asociados a compradores y a su cumplimiento."
+    },
+    {
+      "name": "tb_carts",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "UK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "tb_carts_ibfk_1"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": true,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "uk_cart_user",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "user_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "tb_carts_ibfk_1",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Carritos de compra y su estado."
+    },
+    {
+      "name": "tb_categories",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "name",
+          "type": "varchar(120)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(120) NOT NULL",
+          "key_roles": [
+            "UK"
+          ],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "text",
+          "key_roles": [],
+          "business_description": "Texto descriptivo o nota."
+        },
+        {
+          "name": "sup_id_category",
+          "type": "int unsigned",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned DEFAULT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tb_categories",
+            "column": "id",
+            "constraint": "fk_categories_superior"
+          },
+          "business_description": "Dato «sup_id_category» almacenado para categories; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "name"
+          ]
+        },
+        {
+          "name": "fk_superior_category",
+          "type": "KEY",
+          "columns": [
+            "sup_id_category"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_categories_superior",
+          "columns": [
+            "sup_id_category"
+          ],
+          "referenced_table": "tb_categories",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": "SET NULL",
+          "on_update": "CASCADE"
+        },
+        {
+          "name": "fk_superior_category",
+          "columns": [
+            "sup_id_category"
+          ],
+          "referenced_table": "tb_categories",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 100,
+      "business_description": "Categorías usadas para organizar productos."
+    },
+    {
+      "name": "tb_logs",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "table_operation",
+          "type": "enum('Create','Read','Update','Delete')",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "enum_values": [
+            "Create",
+            "Read",
+            "Update",
+            "Delete"
+          ],
+          "raw": "enum('Create','Read','Update','Delete') DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «table_operation» almacenado para logs; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "db_user",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(80) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «db_user» almacenado para logs; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "table_description",
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "text NOT NULL",
+          "key_roles": [],
+          "business_description": "Texto descriptivo o nota."
+        },
+        {
+          "name": "operation_status",
+          "type": "bit(1)",
+          "nullable": true,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "table_name",
+          "type": "varchar(80)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(80) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "idx_logs_perf",
+          "type": "KEY",
+          "columns": [
+            "table_name",
+            "table_operation"
+          ]
+        },
+        {
+          "name": "idx_logs_table_op",
+          "type": "KEY",
+          "columns": [
+            "table_name",
+            "table_operation"
+          ]
+        }
+      ],
+      "foreign_keys": [],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 25254,
+      "business_description": "Bitácora de operaciones registradas en el sistema."
+    },
+    {
+      "name": "tb_people",
+      "columns": [
+        {
+          "name": "person_ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned DEFAULT NULL",
+          "key_roles": [
+            "UK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "fk_people_users"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "courtesy_title",
+          "type": "varchar(20)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(20) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "given_names",
+          "type": "varchar(150)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(150) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "family_names",
+          "type": "varchar(150)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(150) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "birth_date",
+          "type": "date",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "date DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "gender",
+          "type": "enum('Hombre','Mujer','Prefiero no decirlo')",
+          "nullable": false,
+          "default": "'Prefiero no decirlo'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "enum_values": [
+            "Hombre",
+            "Mujer",
+            "Prefiero no decirlo"
+          ],
+          "raw": "enum('Hombre','Mujer','Prefiero no decirlo') NOT NULL DEFAULT 'Prefiero no decirlo'",
+          "key_roles": [],
+          "business_description": "Dato «gender» almacenado para people; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "country_code",
+          "type": "char(2)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "char(2) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Cantidad o valor numérico relacionado."
+        },
+        {
+          "name": "phone",
+          "type": "varchar(25)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(25) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «phone» almacenado para people; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": true,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "person_ID"
+          ]
+        },
+        {
+          "name": "user_ID",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "user_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_people_users",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 12521,
+      "business_description": "Datos personales vinculados a las cuentas."
+    },
+    {
+      "name": "tb_products",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "SKU",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «SKU» almacenado para products; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "name",
+          "type": "varchar(100)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(100) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "text",
+          "key_roles": [],
+          "business_description": "Texto descriptivo o nota."
+        },
+        {
+          "name": "current_price",
+          "type": "decimal(10,2)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(10,2) NOT NULL",
+          "key_roles": [],
+          "business_description": "Importe asociado al registro."
+        },
+        {
+          "name": "current_stock",
+          "type": "int",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int NOT NULL",
+          "key_roles": [],
+          "business_description": "Cantidad o valor numérico relacionado."
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(20) NOT NULL",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "timestamp NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "foreign_keys": [],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 5010,
+      "business_description": "Catálogo de productos."
+    },
+    {
+      "name": "tb_user_addresses",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "fk_addresses_users"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "address_label",
+          "type": "varchar(100)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(100) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "recipient_name",
+          "type": "varchar(150)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(150) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "recipient_phone",
+          "type": "varchar(25)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(25) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «recipient_phone» almacenado para user addresses; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "delivery_instructions",
+          "type": "varchar(500)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(500) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «delivery_instructions» almacenado para user addresses; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "latitude",
+          "type": "decimal(10,7)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(10,7) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «latitude» almacenado para user addresses; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "longitude",
+          "type": "decimal(10,7)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(10,7) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «longitude» almacenado para user addresses; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "is_default",
+          "type": "tinyint(1)",
+          "nullable": false,
+          "default": "'0'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "tinyint(1) NOT NULL DEFAULT '0'",
+          "key_roles": [],
+          "business_description": "Dato «is_default» almacenado para user addresses; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "idx_user_addresses",
+          "type": "KEY",
+          "columns": [
+            "user_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_addresses_users",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Direcciones registradas para cuentas de usuario."
+    },
+    {
+      "name": "tb_users",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "email",
+          "type": "varchar(100)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(100) NOT NULL",
+          "key_roles": [
+            "UK"
+          ],
+          "business_description": "Dirección de correo electrónico asociada."
+        },
+        {
+          "name": "nick",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [
+            "UK"
+          ],
+          "business_description": "Dato «nick» almacenado para users; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "password",
+          "type": "varchar(255)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato de autenticación o seguridad; su contenido no se interpreta como texto para usuarios."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_login",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «last_login» almacenado para users; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": true,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "email",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "nick",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "nick"
+          ]
+        }
+      ],
+      "foreign_keys": [],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 12530,
+      "business_description": "Cuentas de usuario y datos de acceso."
+    },
+    {
+      "name": "tbc_payment_methods_types",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "name",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "description",
+          "type": "varchar(255)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Texto descriptivo o nota."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        }
+      ],
+      "foreign_keys": [],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Tipos disponibles de métodos de pago."
+    },
+    {
+      "name": "tbd_address_components",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK",
+            "UK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "address_ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL",
+          "key_roles": [
+            "UK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_user_addresses",
+            "column": "ID",
+            "constraint": "fk_component_address"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "value",
+          "type": "varchar(255)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «value» almacenado para address components; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "component_type",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «component_type» almacenado para address components; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "address_sup_ID",
+          "type": "bigint unsigned",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned DEFAULT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tbd_address_components",
+            "column": "ID",
+            "constraint": "fk_component_parent"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "uk_address_component",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "address_ID",
+            "ID"
+          ]
+        },
+        {
+          "name": "idx_address_parent",
+          "type": "KEY",
+          "columns": [
+            "address_ID",
+            "address_sup_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_component_address",
+          "columns": [
+            "address_ID"
+          ],
+          "referenced_table": "tb_user_addresses",
+          "referenced_columns": [
+            "ID"
+          ],
+          "on_delete": "RESTRICT",
+          "on_update": null
+        },
+        {
+          "name": "fk_component_parent",
+          "columns": [
+            "address_ID",
+            "address_sup_ID"
+          ],
+          "referenced_table": "tbd_address_components",
+          "referenced_columns": [
+            "address_ID",
+            "ID"
+          ],
+          "on_delete": "RESTRICT",
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Componentes de una dirección, como sus partes jerárquicas."
+    },
+    {
+      "name": "tbd_carts_items",
+      "columns": [
+        {
+          "name": "cart_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_carts",
+            "column": "ID",
+            "constraint": "tbd_carts_items_ibfk_1"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "provider_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tbd_products_users_providers",
+            "column": "user_ID",
+            "constraint": "tbd_carts_items_ibfk_2"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tbd_products_users_providers",
+            "column": "product_ID",
+            "constraint": "tbd_carts_items_ibfk_3"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "quantity",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": "'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL DEFAULT '1'",
+          "key_roles": [],
+          "business_description": "Cantidad o valor numérico relacionado."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "cart_ID",
+            "provider_ID",
+            "product_ID"
+          ]
+        },
+        {
+          "name": "provider_ID",
+          "type": "KEY",
+          "columns": [
+            "provider_ID"
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "KEY",
+          "columns": [
+            "product_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "tbd_carts_items_ibfk_1",
+          "columns": [
+            "cart_ID"
+          ],
+          "referenced_table": "tb_carts",
+          "referenced_columns": [
+            "ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "tbd_carts_items_ibfk_2",
+          "columns": [
+            "provider_ID"
+          ],
+          "referenced_table": "tbd_products_users_providers",
+          "referenced_columns": [
+            "user_ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "tbd_carts_items_ibfk_3",
+          "columns": [
+            "product_ID"
+          ],
+          "referenced_table": "tbd_products_users_providers",
+          "referenced_columns": [
+            "product_ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Productos incluidos en carritos de compra."
+    },
+    {
+      "name": "tbd_order_items",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "seller_order_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tb_buyer_orders",
+            "column": "ID",
+            "constraint": "tbd_order_items_ibfk_1"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tbd_products_users_providers",
+            "column": "product_ID",
+            "constraint": "tbd_order_items_ibfk_2"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "provider_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tbd_products_users_providers",
+            "column": "user_ID",
+            "constraint": "tbd_order_items_ibfk_3"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "product_name",
+          "type": "varchar(255)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) NOT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "quantity",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [],
+          "business_description": "Cantidad o valor numérico relacionado."
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal(12,2)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(12,2) NOT NULL",
+          "key_roles": [],
+          "business_description": "Importe asociado al registro."
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal(12,2)",
+          "nullable": true,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": true,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "decimal(12,2) GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED",
+          "key_roles": [],
+          "business_description": "Importe asociado al registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "seller_order_ID",
+          "type": "KEY",
+          "columns": [
+            "seller_order_ID"
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "KEY",
+          "columns": [
+            "product_ID"
+          ]
+        },
+        {
+          "name": "provider_ID",
+          "type": "KEY",
+          "columns": [
+            "provider_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "tbd_order_items_ibfk_1",
+          "columns": [
+            "seller_order_ID"
+          ],
+          "referenced_table": "tb_buyer_orders",
+          "referenced_columns": [
+            "ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "tbd_order_items_ibfk_2",
+          "columns": [
+            "product_ID"
+          ],
+          "referenced_table": "tbd_products_users_providers",
+          "referenced_columns": [
+            "product_ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "tbd_order_items_ibfk_3",
+          "columns": [
+            "provider_ID"
+          ],
+          "referenced_table": "tbd_products_users_providers",
+          "referenced_columns": [
+            "user_ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Productos y cantidades incluidas en pedidos."
+    },
+    {
+      "name": "tbd_products_categories",
+      "columns": [
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_products",
+            "column": "id",
+            "constraint": "fk_pc_products"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "category_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_categories",
+            "column": "id",
+            "constraint": "fk_pc_categories"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "product_ID",
+            "category_ID"
+          ]
+        },
+        {
+          "name": "fk_pc_categories",
+          "type": "KEY",
+          "columns": [
+            "category_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_pc_categories",
+          "columns": [
+            "category_ID"
+          ],
+          "referenced_table": "tb_categories",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": "CASCADE ON",
+          "on_update": "CASCADE"
+        },
+        {
+          "name": "fk_pc_products",
+          "columns": [
+            "product_ID"
+          ],
+          "referenced_table": "tb_products",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": "CASCADE ON",
+          "on_update": "CASCADE"
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 90,
+      "business_description": "Asociación entre productos y categorías."
+    },
+    {
+      "name": "tbd_products_users_providers",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "fk_pup_users"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_products",
+            "column": "id",
+            "constraint": "fk_pup_products"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "type_ownership",
+          "type": "enum('Owner','Reseller','Distributor')",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "enum_values": [
+            "Owner",
+            "Reseller",
+            "Distributor"
+          ],
+          "raw": "enum('Owner','Reseller','Distributor') DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «type_ownership» almacenado para products users providers; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "available_date",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "user_ID",
+            "product_ID"
+          ]
+        },
+        {
+          "name": "fk_pup_products",
+          "type": "KEY",
+          "columns": [
+            "product_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_pup_products",
+          "columns": [
+            "product_ID"
+          ],
+          "referenced_table": "tb_products",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": "CASCADE ON",
+          "on_update": "CASCADE"
+        },
+        {
+          "name": "fk_pup_users",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": "CASCADE ON",
+          "on_update": "CASCADE"
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Asociación de productos con sus usuarios o proveedores."
+    },
+    {
+      "name": "tbd_user_payment_methods",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro."
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "tbd_user_payment_methods_ibfk_1"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "payment_method_type_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "FK"
+          ],
+          "references": {
+            "table": "tbc_payment_methods_types",
+            "column": "ID",
+            "constraint": "tbd_user_payment_methods_ibfk_2"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "provider",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [
+            "UK"
+          ],
+          "business_description": "Dato «provider» almacenado para user payment methods; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "provider_method_ref",
+          "type": "varchar(255)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) NOT NULL",
+          "key_roles": [
+            "UK"
+          ],
+          "business_description": "Dato «provider_method_ref» almacenado para user payment methods; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "label",
+          "type": "varchar(100)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(100) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "last_four",
+          "type": "char(4)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "char(4) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «last_four» almacenado para user payment methods; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "is_default",
+          "type": "tinyint(1)",
+          "nullable": false,
+          "default": "'0'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "tinyint(1) NOT NULL DEFAULT '0'",
+          "key_roles": [],
+          "business_description": "Dato «is_default» almacenado para user payment methods; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "ID"
+          ]
+        },
+        {
+          "name": "uk_provider_method",
+          "type": "UNIQUE KEY",
+          "columns": [
+            "provider",
+            "provider_method_ref"
+          ]
+        },
+        {
+          "name": "user_ID",
+          "type": "KEY",
+          "columns": [
+            "user_ID"
+          ]
+        },
+        {
+          "name": "payment_method_type_ID",
+          "type": "KEY",
+          "columns": [
+            "payment_method_type_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "tbd_user_payment_methods_ibfk_1",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "tbd_user_payment_methods_ibfk_2",
+          "columns": [
+            "payment_method_type_ID"
+          ],
+          "referenced_table": "tbc_payment_methods_types",
+          "referenced_columns": [
+            "ID"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Métodos de pago vinculados a usuarios."
+    },
+    {
+      "name": "tbd_user_payment_methods_history",
+      "columns": [
+        {
+          "name": "history_ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": true,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL AUTO_INCREMENT",
+          "key_roles": [
+            "PK"
+          ],
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "payment_method_ID",
+          "type": "bigint unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bigint unsigned NOT NULL",
+          "key_roles": [],
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [],
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "payment_method_type_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [],
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "provider",
+          "type": "varchar(50)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(50) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «provider» almacenado para user payment methods history; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "provider_method_ref",
+          "type": "varchar(255)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(255) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «provider_method_ref» almacenado para user payment methods history; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "label",
+          "type": "varchar(100)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "varchar(100) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Nombre o título descriptivo."
+        },
+        {
+          "name": "last_four",
+          "type": "char(4)",
+          "nullable": true,
+          "default": "NULL",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "char(4) DEFAULT NULL",
+          "key_roles": [],
+          "business_description": "Dato «last_four» almacenado para user payment methods history; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "is_default",
+          "type": "tinyint(1)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "tinyint(1) NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «is_default» almacenado para user payment methods history; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "action_type",
+          "type": "enum('INSERT','UPDATE','DELETE')",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "enum_values": [
+            "INSERT",
+            "UPDATE",
+            "DELETE"
+          ],
+          "raw": "enum('INSERT','UPDATE','DELETE') NOT NULL",
+          "key_roles": [],
+          "business_description": "Dato «action_type» almacenado para user payment methods history; significado funcional inferido por el nombre."
+        },
+        {
+          "name": "action_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "history_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Historial de cambios de métodos de pago de usuarios."
+    },
+    {
+      "name": "tbd_users_wishlist_products",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_users",
+            "column": "id",
+            "constraint": "fk_user2"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "int unsigned NOT NULL",
+          "key_roles": [
+            "PK",
+            "FK"
+          ],
+          "references": {
+            "table": "tb_products",
+            "column": "id",
+            "constraint": "fk_products3"
+          },
+          "business_description": "Identificador que permite distinguir este registro o vincularlo con otro dato."
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "nullable": false,
+          "default": "b'1'",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "bit(1) NOT NULL DEFAULT b'1'",
+          "key_roles": [],
+          "business_description": "Indica el estado o disponibilidad del registro."
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "auto_increment": false,
+          "on_update": null,
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "nullable": false,
+          "default": null,
+          "auto_increment": false,
+          "on_update": "CURRENT_TIMESTAMP",
+          "generated": false,
+          "comment": null,
+          "charset": null,
+          "collation": null,
+          "raw": "datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP",
+          "key_roles": [],
+          "business_description": "Fecha u hora relacionada con este registro."
+        }
+      ],
+      "indexes": [
+        {
+          "name": null,
+          "type": "PRIMARY KEY",
+          "columns": [
+            "user_ID",
+            "product_ID"
+          ]
+        },
+        {
+          "name": "fk_products3",
+          "type": "KEY",
+          "columns": [
+            "product_ID"
+          ]
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_products3",
+          "columns": [
+            "product_ID"
+          ],
+          "referenced_table": "tb_products",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        },
+        {
+          "name": "fk_user2",
+          "columns": [
+            "user_ID"
+          ],
+          "referenced_table": "tb_users",
+          "referenced_columns": [
+            "id"
+          ],
+          "on_delete": null,
+          "on_update": null
+        }
+      ],
+      "engine": null,
+      "table_comment": null,
+      "default_charset": "utf8mb4",
+      "collation": "utf8mb4_0900_ai_ci",
+      "record_count": 0,
+      "business_description": "Productos guardados por usuarios en listas de deseos."
+    }
+  ],
+  "views": [
+    "vw_total_products_by_category",
+    "vw_trazabilidad_buyer_orders",
+    "vw_trazabilidad_carts",
+    "vw_trazabilidad_categorias",
+    "vw_trazabilidad_categorizacion_productos",
+    "vw_trazabilidad_order_items",
+    "vw_trazabilidad_productos",
+    "vw_trazabilidad_products_users_providers",
+    "vw_trazabilidad_tb_people",
+    "vw_trazabilidad_tb_user_addresses",
+    "vw_trazabilidad_tbc_payment_methods_types",
+    "vw_trazabilidad_tbd_address_components",
+    "vw_trazabilidad_tbd_carts_items",
+    "vw_trazabilidad_tbd_user_payment_methods",
+    "vw_trazabilidad_usuarios",
+    "vw_trazabilidad_wishlist",
+    "vw_user_payment_methods_traceability",
+    "vwt_user_payment_methods_traceability"
+  ],
+  "relationships": [
+    {
+      "name": "tb_buyer_orders_ibfk_1",
+      "from_table": "tb_buyer_orders",
+      "from_columns": [
+        "seller_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tb_carts_ibfk_1",
+      "from_table": "tb_carts",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "1:1"
+    },
+    {
+      "name": "fk_categories_superior",
+      "from_table": "tb_categories",
+      "from_columns": [
+        "sup_id_category"
+      ],
+      "to_table": "tb_categories",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": "SET NULL",
+      "on_update": "CASCADE",
+      "optional": true,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_superior_category",
+      "from_table": "tb_categories",
+      "from_columns": [
+        "sup_id_category"
+      ],
+      "to_table": "tb_categories",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": true,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_people_users",
+      "from_table": "tb_people",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": true,
+      "cardinality": "1:1"
+    },
+    {
+      "name": "fk_addresses_users",
+      "from_table": "tb_user_addresses",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_component_address",
+      "from_table": "tbd_address_components",
+      "from_columns": [
+        "address_ID"
+      ],
+      "to_table": "tb_user_addresses",
+      "to_columns": [
+        "ID"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_component_parent",
+      "from_table": "tbd_address_components",
+      "from_columns": [
+        "address_ID",
+        "address_sup_ID"
+      ],
+      "to_table": "tbd_address_components",
+      "to_columns": [
+        "address_ID",
+        "ID"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": null,
+      "optional": true,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_carts_items_ibfk_1",
+      "from_table": "tbd_carts_items",
+      "from_columns": [
+        "cart_ID"
+      ],
+      "to_table": "tb_carts",
+      "to_columns": [
+        "ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_carts_items_ibfk_2",
+      "from_table": "tbd_carts_items",
+      "from_columns": [
+        "provider_ID"
+      ],
+      "to_table": "tbd_products_users_providers",
+      "to_columns": [
+        "user_ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_carts_items_ibfk_3",
+      "from_table": "tbd_carts_items",
+      "from_columns": [
+        "product_ID"
+      ],
+      "to_table": "tbd_products_users_providers",
+      "to_columns": [
+        "product_ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_order_items_ibfk_1",
+      "from_table": "tbd_order_items",
+      "from_columns": [
+        "seller_order_ID"
+      ],
+      "to_table": "tb_buyer_orders",
+      "to_columns": [
+        "ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_order_items_ibfk_2",
+      "from_table": "tbd_order_items",
+      "from_columns": [
+        "product_ID"
+      ],
+      "to_table": "tbd_products_users_providers",
+      "to_columns": [
+        "product_ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_order_items_ibfk_3",
+      "from_table": "tbd_order_items",
+      "from_columns": [
+        "provider_ID"
+      ],
+      "to_table": "tbd_products_users_providers",
+      "to_columns": [
+        "user_ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_pc_categories",
+      "from_table": "tbd_products_categories",
+      "from_columns": [
+        "category_ID"
+      ],
+      "to_table": "tb_categories",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": "CASCADE ON",
+      "on_update": "CASCADE",
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_pc_products",
+      "from_table": "tbd_products_categories",
+      "from_columns": [
+        "product_ID"
+      ],
+      "to_table": "tb_products",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": "CASCADE ON",
+      "on_update": "CASCADE",
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_pup_products",
+      "from_table": "tbd_products_users_providers",
+      "from_columns": [
+        "product_ID"
+      ],
+      "to_table": "tb_products",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": "CASCADE ON",
+      "on_update": "CASCADE",
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_pup_users",
+      "from_table": "tbd_products_users_providers",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": "CASCADE ON",
+      "on_update": "CASCADE",
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_user_payment_methods_ibfk_1",
+      "from_table": "tbd_user_payment_methods",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "tbd_user_payment_methods_ibfk_2",
+      "from_table": "tbd_user_payment_methods",
+      "from_columns": [
+        "payment_method_type_ID"
+      ],
+      "to_table": "tbc_payment_methods_types",
+      "to_columns": [
+        "ID"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_products3",
+      "from_table": "tbd_users_wishlist_products",
+      "from_columns": [
+        "product_ID"
+      ],
+      "to_table": "tb_products",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    },
+    {
+      "name": "fk_user2",
+      "from_table": "tbd_users_wishlist_products",
+      "from_columns": [
+        "user_ID"
+      ],
+      "to_table": "tb_users",
+      "to_columns": [
+        "id"
+      ],
+      "on_delete": null,
+      "on_update": null,
+      "optional": false,
+      "cardinality": "N:1"
+    }
+  ],
+  "inferred_relationships": [
+    {
+      "from_table": "tbd_user_payment_methods_history",
+      "from_column": "user_ID",
+      "to_table": "tb_users",
+      "to_column": "id",
+      "label": "Relación inferida; FK no declarada"
+    },
+    {
+      "from_table": "tbd_user_payment_methods_history",
+      "from_column": "payment_method_type_ID",
+      "to_table": "tbc_payment_methods_types",
+      "to_column": "ID",
+      "label": "Relación inferida; FK no declarada"
+    }
+  ],
+  "data_statements": {
+    "insert_batches": [
+      {
+        "table": "tb_categories",
+        "count": 100,
+        "line": 223,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_logs",
+        "count": 7014,
+        "line": 308,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_logs",
+        "count": 7067,
+        "line": 309,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_logs",
+        "count": 6965,
+        "line": 310,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_logs",
+        "count": 4208,
+        "line": 311,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_people",
+        "count": 7742,
+        "line": 347,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_people",
+        "count": 4779,
+        "line": 348,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_products",
+        "count": 5010,
+        "line": 472,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_users",
+        "count": 6413,
+        "line": 689,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tb_users",
+        "count": 6117,
+        "line": 690,
+        "kind": "INSERT"
+      },
+      {
+        "table": "tbd_products_categories",
+        "count": 90,
+        "line": 1051,
+        "kind": "INSERT"
+      }
+    ],
+    "updates": [],
+    "deletes": [],
+    "all_insert_batches_count": 11,
+    "updates_found": 0,
+    "deletes_found": 0
+  }
+}
