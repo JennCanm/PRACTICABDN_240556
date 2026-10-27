@@ -1,0 +1,746 @@
+{
+  "source": "backups/respaldo12.sql",
+  "database": "db_test",
+  "dialect": "MySQL 8.0.36",
+  "counts": {
+    "PROCEDURE": 0,
+    "FUNCTION": 0,
+    "TRIGGER": 40,
+    "EVENT": 0
+  },
+  "total_routines": 40,
+  "items": [
+    {
+      "name": "trg_buyer_orders_before_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "BEFORE",
+      "event": "UPDATE",
+      "table": "tb_buyer_orders",
+      "impacted_tables": [
+        "tb_buyer_orders"
+      ],
+      "missing_table_references": [],
+      "description": "BEFORE UPDATE sobre tb_buyer_orders; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_buyer_orders_before_update` BEFORE UPDATE ON `tb_buyer_orders` FOR EACH ROW BEGIN\r\n    \r\n    SET NEW.last_update = NOW();\r\n    \r\n    \r\n    IF OLD.fulfillment_status IN ('Delivered', 'Canceled', 'Returned') \r\n       AND (NEW.subtotal <> OLD.subtotal OR NEW.shipping_cost <> OLD.shipping_cost) THEN\r\n        SIGNAL SQLSTATE '45000'\r\n        SET MESSAGE_TEXT = 'No se pueden modificar los montos de una orden finalizada o cancelada.';\r\n    END IF;\r\nEND ;",
+      "source_body": "SET NEW.last_update = NOW();\n    \n    \n    IF OLD.fulfillment_status IN ('Delivered', 'Canceled', 'Returned') \n       AND (NEW.subtotal <> OLD.subtotal OR NEW.shipping_cost <> OLD.shipping_cost) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'No se pueden modificar los montos de una orden finalizada o cancelada.';\n    END IF;"
+    },
+    {
+      "name": "trg_buyer_orders_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_buyer_orders",
+      "impacted_tables": [
+        "tb_buyer_orders"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_buyer_orders; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_buyer_orders_after_update` AFTER UPDATE ON `tb_buyer_orders` FOR EACH ROW BEGIN\r\n    IF OLD.fulfillment_status <> NEW.fulfillment_status THEN\r\n        SET @last_buyer_order_action = CONCAT('Orden ID ', NEW.ID, ' cambió de estado: ', OLD.fulfillment_status, ' -> ', NEW.fulfillment_status);\r\n    END IF;\r\nEND ;",
+      "source_body": "IF OLD.fulfillment_status <> NEW.fulfillment_status THEN\n        SET @last_buyer_order_action = CONCAT('Orden ID ', NEW.ID, ' cambió de estado: ', OLD.fulfillment_status, ' -> ', NEW.fulfillment_status);\n    END IF;"
+    },
+    {
+      "name": "trg_buyer_orders_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_buyer_orders",
+      "impacted_tables": [
+        "tb_buyer_orders"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_buyer_orders; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_buyer_orders_after_delete` AFTER DELETE ON `tb_buyer_orders` FOR EACH ROW BEGIN\r\n    SET @last_buyer_order_action = CONCAT('Orden de compra ID ', OLD.ID, ' del vendedor ', OLD.seller_ID, ' fue eliminada.');\r\nEND ;",
+      "source_body": "SET @last_buyer_order_action = CONCAT('Orden de compra ID ', OLD.ID, ' del vendedor ', OLD.seller_ID, ' fue eliminada.');"
+    },
+    {
+      "name": "trg_carts_before_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "BEFORE",
+      "event": "UPDATE",
+      "table": "tb_carts",
+      "impacted_tables": [
+        "tb_carts"
+      ],
+      "missing_table_references": [],
+      "description": "BEFORE UPDATE sobre tb_carts; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_carts_before_update` BEFORE UPDATE ON `tb_carts` FOR EACH ROW BEGIN    \r\n    SET NEW.last_update = NOW();\r\nEND ;",
+      "source_body": "SET NEW.last_update = NOW();"
+    },
+    {
+      "name": "trg_carts_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_carts",
+      "impacted_tables": [
+        "tb_carts"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_carts; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_carts_after_update` AFTER UPDATE ON `tb_carts` FOR EACH ROW BEGIN\r\n    IF OLD.status <> NEW.status THEN\r\n        \r\n        SET @last_cart_status_changed = CONCAT('Carrito ID ', NEW.ID, ' cambió de status: ', OLD.status, ' a ', NEW.status);\r\n    END IF;\r\nEND ;",
+      "source_body": "IF OLD.status <> NEW.status THEN\n        \n        SET @last_cart_status_changed = CONCAT('Carrito ID ', NEW.ID, ' cambió de status: ', OLD.status, ' a ', NEW.status);\n    END IF;"
+    },
+    {
+      "name": "trg_carts_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_carts",
+      "impacted_tables": [
+        "tb_carts"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_carts; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_carts_after_delete` AFTER DELETE ON `tb_carts` FOR EACH ROW BEGIN\r\n    SET @last_deleted_cart = CONCAT('Carrito eliminado ID: ', OLD.ID, ' perteneciente al usuario: ', OLD.user_ID);\r\nEND ;",
+      "source_body": "SET @last_deleted_cart = CONCAT('Carrito eliminado ID: ', OLD.ID, ' perteneciente al usuario: ', OLD.user_ID);"
+    },
+    {
+      "name": "trg_tbc_categories_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tb_categories",
+      "impacted_tables": [
+        "tb_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tb_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbc_categories_after_insert` AFTER INSERT ON `tb_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_categories', 'Create', USER(), NOW(), CONCAT('Categoría creada: \"', NEW.name, '\". ID=', NEW.id), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Create', USER(), NOW(), CONCAT('Categoría creada: \"', NEW.name, '\". ID=', NEW.id), 1);"
+    },
+    {
+      "name": "trg_tbc_categories_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_categories",
+      "impacted_tables": [
+        "tb_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbc_categories_after_update` AFTER UPDATE ON `tb_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_categories', 'Update', USER(), NOW(), CONCAT('Categoría actualizada: \"', NEW.name, '\". ID=', NEW.id), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Update', USER(), NOW(), CONCAT('Categoría actualizada: \"', NEW.name, '\". ID=', NEW.id), 1);"
+    },
+    {
+      "name": "trg_tbc_categories_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_categories",
+      "impacted_tables": [
+        "tb_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbc_categories_after_delete` AFTER DELETE ON `tb_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_categories', 'Delete', USER(), NOW(), CONCAT('Categoría eliminada: \"', OLD.name, '\". ID=', OLD.id), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Delete', USER(), NOW(), CONCAT('Categoría eliminada: \"', OLD.name, '\". ID=', OLD.id), 1);"
+    },
+    {
+      "name": "trg_tb_people_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tb_people",
+      "impacted_tables": [
+        "tb_people",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tb_people; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_people_after_insert` AFTER INSERT ON `tb_people` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_name`,\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`\r\n    ) VALUES (\r\n        'tb_people',\r\n        'Create',\r\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\r\n        NOW(),\r\n        CONCAT('INSERT: person_ID=', NEW.person_ID, ', given_names=', NEW.given_names, ', family_names=', IFNULL(NEW.family_names, 'NULL'), ', user_ID=', IFNULL(NEW.user_ID, 'NULL')),\r\n        1\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_name`,\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`\n    ) VALUES (\n        'tb_people',\n        'Create',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('INSERT: person_ID=', NEW.person_ID, ', given_names=', NEW.given_names, ', family_names=', IFNULL(NEW.family_names, 'NULL'), ', user_ID=', IFNULL(NEW.user_ID, 'NULL')),\n        1\n    );"
+    },
+    {
+      "name": "trg_tb_people_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_people",
+      "impacted_tables": [
+        "tb_people",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_people; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_people_after_update` AFTER UPDATE ON `tb_people` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_name`,\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`\r\n    ) VALUES (\r\n        'tb_people',\r\n        'Update',\r\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\r\n        NOW(),\r\n        CONCAT('UPDATE: person_ID=', NEW.person_ID, ' | ANTERIOR: [names=', OLD.given_names, ' ', IFNULL(OLD.family_names, ''), '] | NUEVO: [names=', NEW.given_names, ' ', IFNULL(NEW.family_names, ''), ']'),\r\n        1\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_name`,\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`\n    ) VALUES (\n        'tb_people',\n        'Update',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('UPDATE: person_ID=', NEW.person_ID, ' | ANTERIOR: [names=', OLD.given_names, ' ', IFNULL(OLD.family_names, ''), '] | NUEVO: [names=', NEW.given_names, ' ', IFNULL(NEW.family_names, ''), ']'),\n        1\n    );"
+    },
+    {
+      "name": "trg_tb_people_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_people",
+      "impacted_tables": [
+        "tb_people",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_people; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_people_after_delete` AFTER DELETE ON `tb_people` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Delete',\r\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\r\n        NOW(),\r\n        CONCAT('DELETE: person_ID=', OLD.person_ID, ', given_names=', OLD.given_names),\r\n        1,\r\n        'tb_people'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('DELETE: person_ID=', OLD.person_ID, ', given_names=', OLD.given_names),\n        1,\n        'tb_people'\n    );"
+    },
+    {
+      "name": "trq_products_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tb_products",
+      "impacted_tables": [
+        "tb_products"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tb_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_products_after_insert` AFTER INSERT ON `tb_products` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_products', 'Create', USER(), NOW(), CONCAT('Producto creado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Create', USER(), NOW(), CONCAT('Producto creado. ID=', NEW.id, ', SKU=', NEW.sku), 1);"
+    },
+    {
+      "name": "trq_products_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_products",
+      "impacted_tables": [
+        "tb_products"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_products_after_update` AFTER UPDATE ON `tb_products` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_products', 'Update', USER(), NOW(), CONCAT('Producto actualizado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Update', USER(), NOW(), CONCAT('Producto actualizado. ID=', NEW.id, ', SKU=', NEW.sku), 1);"
+    },
+    {
+      "name": "trq_products_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_products",
+      "impacted_tables": [
+        "tb_products"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_products_after_delete` AFTER DELETE ON `tb_products` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_products', 'Delete', USER(), NOW(), CONCAT('Producto eliminado. ID=', OLD.id, ', SKU=', OLD.sku), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Delete', USER(), NOW(), CONCAT('Producto eliminado. ID=', OLD.id, ', SKU=', OLD.sku), 1);"
+    },
+    {
+      "name": "trg_tb_user_addresses_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tb_user_addresses",
+      "impacted_tables": [
+        "tb_user_addresses",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tb_user_addresses; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_user_addresses_after_insert` AFTER INSERT ON `tb_user_addresses` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Create',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('INSERT: ID=', NEW.ID, ', user_ID=', NEW.user_ID, ', label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL')),\r\n        1,\r\n        'tb_user_addresses'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Create',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('INSERT: ID=', NEW.ID, ', user_ID=', NEW.user_ID, ', label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL')),\n        1,\n        'tb_user_addresses'\n    );"
+    },
+    {
+      "name": "trg_tb_user_addresses_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_user_addresses",
+      "impacted_tables": [
+        "tb_user_addresses",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_user_addresses; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_user_addresses_after_update` AFTER UPDATE ON `tb_user_addresses` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Update',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [label=', OLD.address_label, ', recipient=', IFNULL(OLD.recipient_name, 'NULL'), '] | NUEVO: [label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL'), ']'),\r\n        1,\r\n        'tb_user_addresses'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Update',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [label=', OLD.address_label, ', recipient=', IFNULL(OLD.recipient_name, 'NULL'), '] | NUEVO: [label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL'), ']'),\n        1,\n        'tb_user_addresses'\n    );"
+    },
+    {
+      "name": "trg_tb_user_addresses_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_user_addresses",
+      "impacted_tables": [
+        "tb_user_addresses",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_user_addresses; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tb_user_addresses_after_delete` AFTER DELETE ON `tb_user_addresses` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Delete',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('DELETE: ID=', OLD.ID, ', user_ID=', OLD.user_ID, ', label=', OLD.address_label),\r\n        1,\r\n        'tb_user_addresses'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('DELETE: ID=', OLD.ID, ', user_ID=', OLD.user_ID, ', label=', OLD.address_label),\n        1,\n        'tb_user_addresses'\n    );"
+    },
+    {
+      "name": "trq_users_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tb_users",
+      "impacted_tables": [
+        "tb_users"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tb_users; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_users_after_insert` AFTER INSERT ON `tb_users` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_users', 'Create', USER(), NOW(), CONCAT('Usuario creado. ID=', NEW.id, ', email=', NEW.email), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Create', USER(), NOW(), CONCAT('Usuario creado. ID=', NEW.id, ', email=', NEW.email), 1);"
+    },
+    {
+      "name": "trq_users_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tb_users",
+      "impacted_tables": [
+        "tb_users"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tb_users; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_users_after_update` AFTER UPDATE ON `tb_users` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_users', 'Update', USER(), NOW(), CONCAT('Usuario actualizado. ID=', NEW.id, ', email=', NEW.email), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Update', USER(), NOW(), CONCAT('Usuario actualizado. ID=', NEW.id, ', email=', NEW.email), 1);"
+    },
+    {
+      "name": "trq_users_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tb_users",
+      "impacted_tables": [
+        "tb_users"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tb_users; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trq_users_after_delete` AFTER DELETE ON `tb_users` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tb_users', 'Delete', USER(), NOW(), CONCAT('Usuario eliminado. ID=', OLD.id, ', email=', OLD.email), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Delete', USER(), NOW(), CONCAT('Usuario eliminado. ID=', OLD.id, ', email=', OLD.email), 1);"
+    },
+    {
+      "name": "trg_tbd_address_components_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tbd_address_components",
+      "impacted_tables": [
+        "tbd_address_components",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tbd_address_components; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_address_components_after_insert` AFTER INSERT ON `tbd_address_components` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Create',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('INSERT: ID=', NEW.ID, ', address_ID=', NEW.address_ID, ', type=', NEW.component_type, ', value=', NEW.value),\r\n        1,\r\n        'tbd_address_components'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Create',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('INSERT: ID=', NEW.ID, ', address_ID=', NEW.address_ID, ', type=', NEW.component_type, ', value=', NEW.value),\n        1,\n        'tbd_address_components'\n    );"
+    },
+    {
+      "name": "trg_tbd_address_components_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_address_components",
+      "impacted_tables": [
+        "tbd_address_components",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_address_components; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_address_components_after_update` AFTER UPDATE ON `tbd_address_components` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Update',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [type=', OLD.component_type, ', value=', OLD.value, '] | NUEVO: [type=', NEW.component_type, ', value=', NEW.value, ']'),\r\n        1,\r\n        'tbd_address_components'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Update',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [type=', OLD.component_type, ', value=', OLD.value, '] | NUEVO: [type=', NEW.component_type, ', value=', NEW.value, ']'),\n        1,\n        'tbd_address_components'\n    );"
+    },
+    {
+      "name": "trg_tbd_address_components_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_address_components",
+      "impacted_tables": [
+        "tbd_address_components",
+        "tb_logs"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_address_components; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_address_components_after_delete` AFTER DELETE ON `tbd_address_components` FOR EACH ROW BEGIN\r\n    INSERT INTO `tb_logs` (\r\n        `table_operation`,\r\n        `db_user`,\r\n        `operation_date`,\r\n        `table_description`,\r\n        `operation_status`,\r\n        `table_name`\r\n    ) VALUES (\r\n        'Delete',\r\n        CURRENT_USER(),\r\n        NOW(),\r\n        CONCAT('DELETE: ID=', OLD.ID, ', address_ID=', OLD.address_ID, ', type=', OLD.component_type, ', value=', OLD.value),\r\n        1,\r\n        'tbd_address_components'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('DELETE: ID=', OLD.ID, ', address_ID=', OLD.address_ID, ', type=', OLD.component_type, ', value=', OLD.value),\n        1,\n        'tbd_address_components'\n    );"
+    },
+    {
+      "name": "trg_order_items_before_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "BEFORE",
+      "event": "UPDATE",
+      "table": "tbd_order_items",
+      "impacted_tables": [
+        "tbd_order_items"
+      ],
+      "missing_table_references": [],
+      "description": "BEFORE UPDATE sobre tbd_order_items; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_order_items_before_update` BEFORE UPDATE ON `tbd_order_items` FOR EACH ROW BEGIN\r\n    IF NEW.quantity <> OLD.quantity OR NEW.unit_price <> OLD.unit_price THEN\r\n        SIGNAL SQLSTATE '45000'\r\n        SET MESSAGE_TEXT = 'No se permite modificar la cantidad ni el precio unitario de un ítem ya comprado.';\r\n    END IF;\r\nEND ;",
+      "source_body": "IF NEW.quantity <> OLD.quantity OR NEW.unit_price <> OLD.unit_price THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'No se permite modificar la cantidad ni el precio unitario de un ítem ya comprado.';\n    END IF;"
+    },
+    {
+      "name": "trg_order_items_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_order_items",
+      "impacted_tables": [
+        "tbd_order_items"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_order_items; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_order_items_after_update` AFTER UPDATE ON `tbd_order_items` FOR EACH ROW BEGIN\r\n    SET @last_order_item_action = CONCAT('Ítem de orden ID ', NEW.ID, ' (Orden ', NEW.seller_order_ID, ') actualizado.');\r\nEND ;",
+      "source_body": "SET @last_order_item_action = CONCAT('Ítem de orden ID ', NEW.ID, ' (Orden ', NEW.seller_order_ID, ') actualizado.');"
+    },
+    {
+      "name": "trg_order_items_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_order_items",
+      "impacted_tables": [
+        "tbd_order_items"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_order_items; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_order_items_after_delete` AFTER DELETE ON `tbd_order_items` FOR EACH ROW BEGIN\r\n    SET @last_order_item_action = CONCAT('Ítem ', OLD.product_name, ' (ID ', OLD.ID, ') fue removido de la orden ', OLD.seller_order_ID);\r\nEND ;",
+      "source_body": "SET @last_order_item_action = CONCAT('Ítem ', OLD.product_name, ' (ID ', OLD.ID, ') fue removido de la orden ', OLD.seller_order_ID);"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tbd_products_categories",
+      "impacted_tables": [
+        "tbd_products_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tbd_products_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_products_categories_after_insert` AFTER INSERT ON `tbd_products_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tbd_products_categories', 'Create', USER(), NOW(), CONCAT('Categorización creada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Create', USER(), NOW(), CONCAT('Categorización creada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_products_categories",
+      "impacted_tables": [
+        "tbd_products_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_products_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_products_categories_after_update` AFTER UPDATE ON `tbd_products_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tbd_products_categories', 'Update', USER(), NOW(), CONCAT('Categorización actualizada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Update', USER(), NOW(), CONCAT('Categorización actualizada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);"
+    },
+    {
+      "name": "trg_tbd_products_categories_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_products_categories",
+      "impacted_tables": [
+        "tbd_products_categories"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_products_categories; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_products_categories_after_delete` AFTER DELETE ON `tbd_products_categories` FOR EACH ROW BEGIN\r\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\r\n    VALUES ('tbd_products_categories', 'Delete', USER(), NOW(), CONCAT('Categorización eliminada. ID=', OLD.product_ID, ', Category_ID=', OLD.category_ID), 1);\r\nEND ;",
+      "source_body": "INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Delete', USER(), NOW(), CONCAT('Categorización eliminada. ID=', OLD.product_ID, ', Category_ID=', OLD.category_ID), 1);"
+    },
+    {
+      "name": "trg_providers_before_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "BEFORE",
+      "event": "UPDATE",
+      "table": "tbd_products_users_providers",
+      "impacted_tables": [
+        "tbd_products_users_providers"
+      ],
+      "missing_table_references": [],
+      "description": "BEFORE UPDATE sobre tbd_products_users_providers; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_providers_before_update` BEFORE UPDATE ON `tbd_products_users_providers` FOR EACH ROW BEGIN    \r\n    SET NEW.last_update = NOW();\r\nEND ;",
+      "source_body": "SET NEW.last_update = NOW();"
+    },
+    {
+      "name": "trg_providers_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_products_users_providers",
+      "impacted_tables": [
+        "tbd_products_users_providers"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_products_users_providers; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_providers_after_update` AFTER UPDATE ON `tbd_products_users_providers` FOR EACH ROW BEGIN\r\n    SET @last_provider_action = CONCAT('Relaciones proveedor/usuario actualizadas para usuario ', NEW.user_ID, ' y producto ', NEW.product_ID);\r\nEND ;",
+      "source_body": "SET @last_provider_action = CONCAT('Relaciones proveedor/usuario actualizadas para usuario ', NEW.user_ID, ' y producto ', NEW.product_ID);"
+    },
+    {
+      "name": "trg_providers_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_products_users_providers",
+      "impacted_tables": [
+        "tbd_products_users_providers"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_products_users_providers; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_providers_after_delete` AFTER DELETE ON `tbd_products_users_providers` FOR EACH ROW BEGIN\r\n    SET @last_provider_action = CONCAT('Relación eliminada entre usuario ', OLD.user_ID, ' y producto ', OLD.product_ID);\r\nEND ;",
+      "source_body": "SET @last_provider_action = CONCAT('Relación eliminada entre usuario ', OLD.user_ID, ' y producto ', OLD.product_ID);"
+    },
+    {
+      "name": "trg_tbd_user_payment_methods_ai",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tbd_user_payment_methods",
+      "impacted_tables": [
+        "tbd_user_payment_methods",
+        "tbd_user_payment_methods_history"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tbd_user_payment_methods; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_user_payment_methods_ai` AFTER INSERT ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\r\n    INSERT INTO `tbd_user_payment_methods_history` (\r\n        `payment_method_ID`,\r\n        `user_ID`,\r\n        `payment_method_type_ID`,\r\n        `provider`,\r\n        `provider_method_ref`,\r\n        `label`,\r\n        `last_four`,\r\n        `is_default`,\r\n        `status`,\r\n        `action_type`\r\n    ) VALUES (\r\n        NEW.`ID`,\r\n        NEW.`user_ID`,\r\n        NEW.`payment_method_type_ID`,\r\n        NEW.`provider`,\r\n        NEW.`provider_method_ref`,\r\n        NEW.`label`,\r\n        NEW.`last_four`,\r\n        NEW.`is_default`,\r\n        NEW.`status`,\r\n        'INSERT'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tbd_user_payment_methods_history` (\n        `payment_method_ID`,\n        `user_ID`,\n        `payment_method_type_ID`,\n        `provider`,\n        `provider_method_ref`,\n        `label`,\n        `last_four`,\n        `is_default`,\n        `status`,\n        `action_type`\n    ) VALUES (\n        NEW.`ID`,\n        NEW.`user_ID`,\n        NEW.`payment_method_type_ID`,\n        NEW.`provider`,\n        NEW.`provider_method_ref`,\n        NEW.`label`,\n        NEW.`last_four`,\n        NEW.`is_default`,\n        NEW.`status`,\n        'INSERT'\n    );"
+    },
+    {
+      "name": "trg_user_payment_methods_after_insert",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "INSERT",
+      "table": "tbd_user_payment_methods",
+      "impacted_tables": [
+        "tbd_user_payment_methods"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER INSERT sobre tbd_user_payment_methods; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_user_payment_methods_after_insert` AFTER INSERT ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\r\n    INSERT INTO db_test.tbd_user_payment_methods_history (\r\n        payment_method_ID,\r\n        user_ID,\r\n        payment_method_type_ID,\r\n        provider,\r\n        provider_method_ref,\r\n        label,\r\n        last_four,\r\n        is_default,\r\n        status,\r\n        action_type,\r\n        action_date\r\n    ) VALUES (\r\n        NEW.ID,\r\n        NEW.user_ID,\r\n        NEW.payment_method_type_ID,\r\n        NEW.provider,\r\n        NEW.provider_method_ref,\r\n        NEW.label,\r\n        NEW.last_four,\r\n        NEW.is_default,\r\n        NEW.status,\r\n        'INSERT',\r\n        NOW()\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO db_test.tbd_user_payment_methods_history (\n        payment_method_ID,\n        user_ID,\n        payment_method_type_ID,\n        provider,\n        provider_method_ref,\n        label,\n        last_four,\n        is_default,\n        status,\n        action_type,\n        action_date\n    ) VALUES (\n        NEW.ID,\n        NEW.user_ID,\n        NEW.payment_method_type_ID,\n        NEW.provider,\n        NEW.provider_method_ref,\n        NEW.label,\n        NEW.last_four,\n        NEW.is_default,\n        NEW.status,\n        'INSERT',\n        NOW()\n    );"
+    },
+    {
+      "name": "trg_tbd_user_payment_methods_au",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_user_payment_methods",
+      "impacted_tables": [
+        "tbd_user_payment_methods",
+        "tbd_user_payment_methods_history"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_user_payment_methods; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_user_payment_methods_au` AFTER UPDATE ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\r\n    INSERT INTO `tbd_user_payment_methods_history` (\r\n        `payment_method_ID`,\r\n        `user_ID`,\r\n        `payment_method_type_ID`,\r\n        `provider`,\r\n        `provider_method_ref`,\r\n        `label`,\r\n        `last_four`,\r\n        `is_default`,\r\n        `status`,\r\n        `action_type`\r\n    ) VALUES (\r\n        NEW.`ID`,\r\n        NEW.`user_ID`,\r\n        NEW.`payment_method_type_ID`,\r\n        NEW.`provider`,\r\n        NEW.`provider_method_ref`,\r\n        NEW.`label`,\r\n        NEW.`last_four`,\r\n        NEW.`is_default`,\r\n        NEW.`status`,\r\n        'UPDATE'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tbd_user_payment_methods_history` (\n        `payment_method_ID`,\n        `user_ID`,\n        `payment_method_type_ID`,\n        `provider`,\n        `provider_method_ref`,\n        `label`,\n        `last_four`,\n        `is_default`,\n        `status`,\n        `action_type`\n    ) VALUES (\n        NEW.`ID`,\n        NEW.`user_ID`,\n        NEW.`payment_method_type_ID`,\n        NEW.`provider`,\n        NEW.`provider_method_ref`,\n        NEW.`label`,\n        NEW.`last_four`,\n        NEW.`is_default`,\n        NEW.`status`,\n        'UPDATE'\n    );"
+    },
+    {
+      "name": "trg_tbd_user_payment_methods_ad",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_user_payment_methods",
+      "impacted_tables": [
+        "tbd_user_payment_methods",
+        "tbd_user_payment_methods_history"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_user_payment_methods; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_tbd_user_payment_methods_ad` AFTER DELETE ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\r\n    INSERT INTO `tbd_user_payment_methods_history` (\r\n        `payment_method_ID`,\r\n        `user_ID`,\r\n        `payment_method_type_ID`,\r\n        `provider`,\r\n        `provider_method_ref`,\r\n        `label`,\r\n        `last_four`,\r\n        `is_default`,\r\n        `status`,\r\n        `action_type`\r\n    ) VALUES (\r\n        OLD.`ID`,\r\n        OLD.`user_ID`,\r\n        OLD.`payment_method_type_ID`,\r\n        OLD.`provider`,\r\n        OLD.`provider_method_ref`,\r\n        OLD.`label`,\r\n        OLD.`last_four`,\r\n        OLD.`is_default`,\r\n        OLD.`status`,\r\n        'DELETE'\r\n    );\r\nEND ;",
+      "source_body": "INSERT INTO `tbd_user_payment_methods_history` (\n        `payment_method_ID`,\n        `user_ID`,\n        `payment_method_type_ID`,\n        `provider`,\n        `provider_method_ref`,\n        `label`,\n        `last_four`,\n        `is_default`,\n        `status`,\n        `action_type`\n    ) VALUES (\n        OLD.`ID`,\n        OLD.`user_ID`,\n        OLD.`payment_method_type_ID`,\n        OLD.`provider`,\n        OLD.`provider_method_ref`,\n        OLD.`label`,\n        OLD.`last_four`,\n        OLD.`is_default`,\n        OLD.`status`,\n        'DELETE'\n    );"
+    },
+    {
+      "name": "trg_wishlist_before_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "BEFORE",
+      "event": "UPDATE",
+      "table": "tbd_users_wishlist_products",
+      "impacted_tables": [
+        "tbd_users_wishlist_products"
+      ],
+      "missing_table_references": [],
+      "description": "BEFORE UPDATE sobre tbd_users_wishlist_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_wishlist_before_update` BEFORE UPDATE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN    \r\n    SET NEW.last_update = NOW();\r\nEND ;",
+      "source_body": "SET NEW.last_update = NOW();"
+    },
+    {
+      "name": "trg_wishlist_after_update",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "table": "tbd_users_wishlist_products",
+      "impacted_tables": [
+        "tbd_users_wishlist_products"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER UPDATE sobre tbd_users_wishlist_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_wishlist_after_update` AFTER UPDATE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN\r\n    SET @last_wishlist_action = CONCAT('Producto ', NEW.product_ID, ' del usuario ', NEW.user_ID, ' actualizado a status: ', NEW.status);\r\nEND ;",
+      "source_body": "SET @last_wishlist_action = CONCAT('Producto ', NEW.product_ID, ' del usuario ', NEW.user_ID, ' actualizado a status: ', NEW.status);"
+    },
+    {
+      "name": "trg_wishlist_after_delete",
+      "type": "TRIGGER",
+      "parameters": [
+        "OLD",
+        "NEW"
+      ],
+      "timing": "AFTER",
+      "event": "DELETE",
+      "table": "tbd_users_wishlist_products",
+      "impacted_tables": [
+        "tbd_users_wishlist_products"
+      ],
+      "missing_table_references": [],
+      "description": "AFTER DELETE sobre tbd_users_wishlist_products; implementa reglas de negocio y/o auditoría al ocurrir el evento.",
+      "source_definition": "CREATE DEFINER=`root`@`localhost` TRIGGER `trg_wishlist_after_delete` AFTER DELETE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN\r\n    SET @last_wishlist_action = CONCAT('Producto ', OLD.product_ID, ' removido de la lista de deseos del usuario ', OLD.user_ID);\r\nEND ;",
+      "source_body": "SET @last_wishlist_action = CONCAT('Producto ', OLD.product_ID, ' removido de la lista de deseos del usuario ', OLD.user_ID);"
+    }
+  ]
+}

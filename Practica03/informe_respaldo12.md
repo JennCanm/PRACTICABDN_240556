@@ -42,5 +42,16 @@ Se leyeron las sentencias `CREATE TABLE` y se recorrieron los `INSERT ... VALUES
 - `modelo_eer_diccionario_respaldo12.html`: diagrama navegable y diccionario integrado, con búsqueda, filtros, modo claro/oscuro y paneles de detalle.
 - `modelo_eer_respaldo12.archify.json`: representación EER tipada en formato Archify; las relaciones inferidas usan trazo discontinuo.
 - `metadatos_respaldo12.json`: inventario estructurado completo, incluidos lotes INSERT con línea de origen, conteos y relaciones.
+- `procedimientos_respaldo12.json`: inventario de triggers y definiciones SQL, con tablas impactadas y referencias faltantes.
 
 El inventario y las cifras derivan exclusivamente de `backups/respaldo12.sql`.
+
+## Anexo técnico: procedimientos, funciones y triggers
+
+La inspección de `backups/respaldo12.sql` encontró **40 triggers**, **0 procedimientos almacenados**, **0 funciones almacenadas** y **0 eventos**. Por tanto, el respaldo no contiene objetos `CREATE PROCEDURE` ni `CREATE FUNCTION`; la lógica almacenada identificada está implementada en triggers. El inventario JSON conserva la definición SQL completa, el cuerpo, el evento, la tabla activadora y las tablas referenciadas detectables en el código.
+
+La lógica de negocio incrustada tiene complejidad **moderada a alta**: los triggers realizan validaciones de estados y montos, actualizaciones automáticas, propagación de cambios entre tablas, mantenimiento de agregados y registros de auditoría. Hay reglas procedimentales ramificadas y operaciones con efectos secundarios; cambios de esquema deben revisar conjuntamente trigger y tablas afectadas. Esta apreciación es cualitativa y se basa en la estructura y operaciones visibles en las definiciones, no en métricas de rendimiento.
+
+La extracción comparó las 40 definiciones del SQL con las del visor HTML. No se detectaron referencias a tablas inexistentes en los cuerpos de las rutinas analizadas. La comprobación es estática: no valida permisos del `DEFINER`, existencia de usuarios en el servidor destino, ni dependencias dinámicas construidas mediante SQL dinámico. Las relaciones inferidas documentadas anteriormente siguen sin ser claves foráneas declaradas.
+
+El módulo **Rutinas** del HTML permite explorar las definiciones de los triggers; los contadores de procedimientos y funciones indican cero. `procedimientos_respaldo12.json` contiene los 40 objetos con parámetros (contexto `OLD`/`NEW` en triggers), tablas impactadas, descripción funcional y código fuente.
