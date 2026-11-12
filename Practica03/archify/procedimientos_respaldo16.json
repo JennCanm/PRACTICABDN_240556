@@ -1,0 +1,937 @@
+[
+  {
+    "name": "sp_generate_test_users",
+    "type": "PROCEDURE",
+    "definer": "root@localhost",
+    "parameters": [
+      {
+        "mode": "IN",
+        "name": "p_scenario",
+        "type": "VARCHAR(20)"
+      },
+      {
+        "mode": "IN",
+        "name": "p_password",
+        "type": "VARCHAR(255)"
+      }
+    ],
+    "impactedTables": [
+      "tb_people",
+      "tb_users"
+    ],
+    "transactionHandling": true,
+    "source": "CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_generate_test_users`(\n    IN p_scenario VARCHAR(20),\n    IN p_password VARCHAR(255)\n)\nBEGIN\n    DECLARE v_total INT DEFAULT 0;\n    DECLARE v_i INT DEFAULT 0;\n    DECLARE v_user_id INT UNSIGNED;\n    DECLARE v_status BIT(1);\n    DECLARE v_country CHAR(2);\n    DECLARE v_gender VARCHAR(30);\n    DECLARE v_age INT;\n    DECLARE v_birth_date DATE;\n    DECLARE v_given_names VARCHAR(150);\n    DECLARE v_family_names VARCHAR(150);\n    DECLARE v_email VARCHAR(100);\n    DECLARE v_nick VARCHAR(50);\n    DECLARE v_unique VARCHAR(32);\n\n    DECLARE EXIT HANDLER FOR SQLEXCEPTION\n    BEGIN\n        ROLLBACK;\n        RESIGNAL;\n    END;\n\n    IF p_password IS NULL OR CHAR_LENGTH(p_password) < 8 THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'La contraseña debe tener al menos 8 caracteres';\n    END IF;\n\n    CASE p_scenario\n        WHEN 'escenario_1' THEN SET v_total = 500;\n        WHEN 'escenario_2' THEN SET v_total = 2000;\n        WHEN 'escenario_3' THEN SET v_total = 5000;\n        ELSE\n            SIGNAL SQLSTATE '45000'\n            SET MESSAGE_TEXT = 'Usa escenario_1, escenario_2 o escenario_3';\n    END CASE;\n\n    START TRANSACTION;\n\n    WHILE v_i < v_total DO\n        SET v_i = v_i + 1;\n\n        \n        IF p_scenario = 'escenario_3' AND v_i > 4000 THEN\n            SET v_status = b'0';\n        ELSE\n            SET v_status = b'1';\n        END IF;\n\n        \n        IF p_scenario = 'escenario_1' THEN\n            SET v_country = 'US';\n        ELSE\n            SET v_country = ELT(\n                1 + FLOOR(RAND() * 10),\n                'MX', 'CA', 'GB', 'FR', 'DE',\n                'ES', 'BR', 'JP', 'AU', 'IN'\n            );\n        END IF;\n\n        \n        IF p_scenario = 'escenario_2' THEN\n            SET v_age = 19 + FLOOR(RAND() * 17);\n        ELSE\n            SET v_age = 18 + FLOOR(RAND() * 48);\n        END IF;\n\n        SET v_birth_date = DATE_SUB(CURDATE(), INTERVAL v_age YEAR) - INTERVAL FLOOR(RAND() * 365) DAY;\n\n        \n        SET v_given_names = ELT(\n            1 + FLOOR(RAND() * 30),\n            'Carlos', 'Maria', 'Jose', 'Ana', 'Luis',\n            'Sofia', 'Miguel', 'Lucia', 'Diego', 'Valeria',\n            'Daniel', 'Gabriela', 'Alejandro', 'Camila',\n            'Fernando', 'Isabella', 'Ricardo', 'Elena',\n            'Andres', 'Natalia', 'James', 'Emily',\n            'William', 'Olivia', 'Benjamin', 'Charlotte',\n            'Noah', 'Amelia', 'Lucas', 'Emma'\n        );\n\n        \n        SET v_family_names = ELT(\n            1 + FLOOR(RAND() * 30),\n            'Hernandez', 'Garcia', 'Martinez', 'Lopez',\n            'Gonzalez', 'Rodriguez', 'Perez', 'Sanchez',\n            'Ramirez', 'Torres', 'Flores', 'Rivera',\n            'Gomez', 'Diaz', 'Cruz', 'Morales',\n            'Reyes', 'Ortiz', 'Gutierrez', 'Castillo',\n            'Smith', 'Johnson', 'Brown', 'Williams',\n            'Jones', 'Miller', 'Davis', 'Wilson',\n            'Anderson', 'Taylor'\n        );\n\n        \n        IF p_scenario = 'escenario_1' THEN\n            SET v_gender = 'Hombre';\n        ELSE\n            SET v_gender = ELT(\n                1 + FLOOR(RAND() * 3),\n                'Hombre', 'Mujer', 'Prefiero no decirlo'\n            );\n        END IF;\n\n        \n        SET v_unique = REPLACE(UUID(), '-', '');\n        SET v_email = LOWER(CONCAT(v_given_names, '.', v_family_names, '.', LEFT(v_unique, 8), '@example.com'));\n        SET v_nick = LOWER(CONCAT(LEFT(v_given_names, 10), '_', LEFT(v_family_names, 10), '_', LEFT(v_unique, 6)));\n\n        \n        INSERT INTO tb_users (nick, email, password, status, creation_date)\n        VALUES (v_nick, v_email, SHA2(p_password, 256), v_status, NOW());\n\n        SET v_user_id = LAST_INSERT_ID();\n\n        \n        INSERT INTO tb_people (user_ID, given_names, family_names, gender, birth_date, country_code, status, creation_date)\n        VALUES (v_user_id, v_given_names, v_family_names, v_gender, v_birth_date, v_country, v_status, NOW());\n\n    END WHILE;\n\n    COMMIT;\nEND",
+    "explanation": "Genera usuarios sintéticos por escenario en una transacción; valida contraseña y escenario, y revierte ante excepción."
+  },
+  {
+    "name": "sp_restore_product",
+    "type": "PROCEDURE",
+    "definer": "root@localhost",
+    "parameters": [
+      {
+        "mode": "IN",
+        "name": "p_product_id",
+        "type": "INT UNSIGNED"
+      }
+    ],
+    "impactedTables": [
+      "tb_products"
+    ],
+    "transactionHandling": false,
+    "source": "CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_restore_product`(\n    IN p_product_id INT UNSIGNED\n)\nBEGIN\n    IF NOT EXISTS (\n        SELECT 1\n        FROM tb_products\n        WHERE id = p_product_id\n    ) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'El producto especificado no existe';\n    END IF;\n\n    \n    IF EXISTS (\n        SELECT 1\n        FROM tb_products\n        WHERE id = p_product_id\n          AND status = 'ACTIVE'\n    ) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'El producto ya se encuentra activo';\n    END IF;\n\n    UPDATE tb_products\n    SET status = 'ACTIVE'\n    WHERE id = p_product_id;\nEND",
+    "explanation": "Valida que el producto exista y esté inactivo antes de cambiar su estado a ACTIVE."
+  },
+  {
+    "name": "sp_soft_delete_product",
+    "type": "PROCEDURE",
+    "definer": "root@localhost",
+    "parameters": [
+      {
+        "mode": "IN",
+        "name": "p_product_id",
+        "type": "INT UNSIGNED"
+      }
+    ],
+    "impactedTables": [
+      "tb_products"
+    ],
+    "transactionHandling": false,
+    "source": "CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_soft_delete_product`(\n    IN p_product_id INT UNSIGNED\n)\nBEGIN\n    IF NOT EXISTS (\n        SELECT 1\n        FROM tb_products\n        WHERE id = p_product_id\n    ) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'El producto especificado no existe';\n    END IF;\n\n    \n    IF EXISTS (\n        SELECT 1\n        FROM tb_products\n        WHERE id = p_product_id\n          AND status = 'INACTIVE'\n    ) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'El producto ya se encuentra eliminado';\n    END IF;\n\n    UPDATE tb_products\n    SET status = 'INACTIVE'\n    WHERE id = p_product_id;\nEND",
+    "explanation": "Valida que el producto exista y esté activo antes de cambiar su estado a INACTIVE."
+  },
+  {
+    "name": "trg_buyer_orders_before_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_buyer_orders"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_buyer_orders_before_update` BEFORE UPDATE ON `tb_buyer_orders` FOR EACH ROW BEGIN\n    \n    SET NEW.last_update = NOW();\n    \n    \n    IF OLD.fulfillment_status IN ('Delivered', 'Canceled', 'Returned') \n       AND (NEW.subtotal <> OLD.subtotal OR NEW.shipping_cost <> OLD.shipping_cost) THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'No se pueden modificar los montos de una orden finalizada o cancelada.';\n    END IF;\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_buyer_orders_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_buyer_orders"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_buyer_orders_after_update` AFTER UPDATE ON `tb_buyer_orders` FOR EACH ROW BEGIN\n    IF OLD.fulfillment_status <> NEW.fulfillment_status THEN\n        SET @last_buyer_order_action = CONCAT('Orden ID ', NEW.ID, ' cambió de estado: ', OLD.fulfillment_status, ' -> ', NEW.fulfillment_status);\n    END IF;\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_buyer_orders_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_buyer_orders"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_buyer_orders_after_delete` AFTER DELETE ON `tb_buyer_orders` FOR EACH ROW BEGIN\n    SET @last_buyer_order_action = CONCAT('Orden de compra ID ', OLD.ID, ' del vendedor ', OLD.seller_ID, ' fue eliminada.');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_carts_before_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_carts"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_carts_before_update` BEFORE UPDATE ON `tb_carts` FOR EACH ROW BEGIN    \n    SET NEW.last_update = NOW();\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_carts_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_carts"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_carts_after_update` AFTER UPDATE ON `tb_carts` FOR EACH ROW BEGIN\n    IF OLD.status <> NEW.status THEN\n        \n        SET @last_cart_status_changed = CONCAT('Carrito ID ', NEW.ID, ' cambió de status: ', OLD.status, ' a ', NEW.status);\n    END IF;\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_carts_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_carts"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_carts_after_delete` AFTER DELETE ON `tb_carts` FOR EACH ROW BEGIN\n    SET @last_deleted_cart = CONCAT('Carrito eliminado ID: ', OLD.ID, ' perteneciente al usuario: ', OLD.user_ID);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_categories_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_categories_after_insert` AFTER INSERT ON `tb_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Create', USER(), NOW(), CONCAT('Categoría creada: \"', NEW.name, '\". ID=', NEW.id), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_categories_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_categories_after_update` AFTER UPDATE ON `tb_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Update', USER(), NOW(), CONCAT('Categoría actualizada: \"', NEW.name, '\". ID=', NEW.id), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_categories_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_categories_after_delete` AFTER DELETE ON `tb_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_categories', 'Delete', USER(), NOW(), CONCAT('Categoría eliminada: \"', OLD.name, '\". ID=', OLD.id), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_order_cancellations_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_order_cancellations"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_order_cancellations_after_insert` AFTER INSERT ON `tb_order_cancellations` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Cancelación solicitada. ID: ', NEW.id, ', Order_ID: ', NEW.order_id, ', Motivo: ', LEFT(NEW.cancellation_reason, 50)), 1, 'tb_order_cancellations');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_order_cancellations_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_order_cancellations"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_order_cancellations_after_update` AFTER UPDATE ON `tb_order_cancellations` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Cancelación procesada. ID: ', NEW.id, ', Estado previo: ', OLD.cancellation_status, ' -> Nuevo estado: ', NEW.cancellation_status), 1, 'tb_order_cancellations');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_order_cancellations_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_order_cancellations"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_order_cancellations_after_delete` AFTER DELETE ON `tb_order_cancellations` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Registro de cancelación eliminado. ID: ', OLD.id, ', Order_ID: ', OLD.order_id), 1, 'tb_order_cancellations');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_methods_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_methods"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_methods_after_insert` AFTER INSERT ON `tb_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Método de pago creado. ID: ', NEW.id, ', Nombre: ', NEW.name), 1, 'tb_payment_methods');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_methods_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_methods"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_methods_after_update` AFTER UPDATE ON `tb_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Método de pago modificado. ID: ', NEW.id, ', Nombre: ', NEW.name, ', Status: ', NEW.status), 1, 'tb_payment_methods');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_methods_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_methods"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_methods_after_delete` AFTER DELETE ON `tb_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Método de pago eliminado. ID: ', OLD.id, ', Nombre: ', OLD.name), 1, 'tb_payment_methods');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_transaction_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_transaction"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_transaction_after_insert` AFTER INSERT ON `tb_payment_transaction` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Transacción creada. ID: ', NEW.id, ', Ref: ', NEW.transaction_reference, ', Monto: ', NEW.amount), 1, 'tb_payment_transaction');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_transaction_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_transaction"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_transaction_after_update` AFTER UPDATE ON `tb_payment_transaction` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Transacción actualizada. ID: ', NEW.id, ', Estado previo: ', OLD.transaction_status, ' -> Nuevo estado: ', NEW.transaction_status), 1, 'tb_payment_transaction');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payment_transaction_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payment_transaction"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payment_transaction_after_delete` AFTER DELETE ON `tb_payment_transaction` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Transacción eliminada. ID: ', OLD.id, ', Ref: ', OLD.transaction_reference), 1, 'tb_payment_transaction');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payments_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payments_after_insert` AFTER INSERT ON `tb_payments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Pago registrado. ID: ', NEW.id, ', Order_ID: ', NEW.order_id, ', Monto: ', NEW.amount), 1, 'tb_payments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payments_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payments_after_update` AFTER UPDATE ON `tb_payments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Pago modificado. ID: ', NEW.id, ', Estado de pago: ', NEW.payment_status, ', Monto: ', NEW.amount), 1, 'tb_payments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_payments_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_payments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_payments_after_delete` AFTER DELETE ON `tb_payments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Pago eliminado. ID: ', OLD.id, ', Order_ID: ', OLD.order_id), 1, 'tb_payments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_people_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_people"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_people_after_insert` AFTER INSERT ON `tb_people` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_name`,\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`\n    ) VALUES (\n        'tb_people',\n        'Create',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('INSERT: person_ID=', NEW.person_ID, ', given_names=', NEW.given_names, ', family_names=', IFNULL(NEW.family_names, 'NULL'), ', user_ID=', IFNULL(NEW.user_ID, 'NULL')),\n        1\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_people_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_people"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_people_after_update` AFTER UPDATE ON `tb_people` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_name`,\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`\n    ) VALUES (\n        'tb_people',\n        'Update',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('UPDATE: person_ID=', NEW.person_ID, ' | ANTERIOR: [names=', OLD.given_names, ' ', IFNULL(OLD.family_names, ''), '] | NUEVO: [names=', NEW.given_names, ' ', IFNULL(NEW.family_names, ''), ']'),\n        1\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_people_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_people"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_people_after_delete` AFTER DELETE ON `tb_people` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        COALESCE(NULLIF(CURRENT_ROLE(), 'NONE'), SESSION_USER()),\n        NOW(),\n        CONCAT('DELETE: person_ID=', OLD.person_ID, ', given_names=', OLD.given_names),\n        1,\n        'tb_people'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_products_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_products_after_insert` AFTER INSERT ON `tb_products` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Create', USER(), NOW(), CONCAT('Producto creado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_products_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_products_after_update` AFTER UPDATE ON `tb_products` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Update', USER(), NOW(), CONCAT('Producto actualizado. ID=', NEW.id, ', SKU=', NEW.sku), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_products_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_products_after_delete` AFTER DELETE ON `tb_products` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_products', 'Delete', USER(), NOW(), CONCAT('Producto eliminado. ID=', OLD.id, ', SKU=', OLD.sku), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_refunds_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_refunds"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_refunds_after_insert` AFTER INSERT ON `tb_refunds` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Reembolso registrado. ID: ', NEW.id, ', Order_ID: ', NEW.order_id, ', Monto: ', NEW.amount), 1, 'tb_refunds');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_refunds_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_refunds"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_refunds_after_update` AFTER UPDATE ON `tb_refunds` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Reembolso actualizado. ID: ', NEW.id, ', Estado previo: ', OLD.refund_status, ' -> Nuevo estado: ', NEW.refund_status), 1, 'tb_refunds');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_refunds_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_refunds"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_refunds_after_delete` AFTER DELETE ON `tb_refunds` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Reembolso eliminado. ID: ', OLD.id, ', Order_ID: ', OLD.order_id), 1, 'tb_refunds');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_returns_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_returns"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_returns_after_insert` AFTER INSERT ON `tb_returns` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Devolución registrada. ID: ', NEW.id, ', Order_ID: ', NEW.order_id, ', Motivo: ', LEFT(NEW.return_reason, 50)), 1, 'tb_returns');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_returns_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_returns"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_returns_after_update` AFTER UPDATE ON `tb_returns` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Devolución actualizada. ID: ', NEW.id, ', Estado previo: ', OLD.return_status, ' -> Nuevo estado: ', NEW.return_status), 1, 'tb_returns');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_returns_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_returns"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_returns_after_delete` AFTER DELETE ON `tb_returns` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Devolución eliminada. ID: ', OLD.id, ', Order_ID: ', OLD.order_id), 1, 'tb_returns');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_shipments_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_shipments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_shipments_after_insert` AFTER INSERT ON `tb_shipments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Envío creado. ID: ', NEW.id, ', Order_ID: ', NEW.order_id, ', Tracking: ', IFNULL(NEW.tracking_number, 'N/A')), 1, 'tb_shipments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_shipments_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_shipments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_shipments_after_update` AFTER UPDATE ON `tb_shipments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Envío actualizado. ID: ', NEW.id, ', Estado previo: ', OLD.shipping_status, ' -> Nuevo estado: ', NEW.shipping_status), 1, 'tb_shipments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_shipments_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_shipments"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_shipments_after_delete` AFTER DELETE ON `tb_shipments` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Envío eliminado. ID: ', OLD.id, ', Order_ID: ', OLD.order_id), 1, 'tb_shipments');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_user_addresses_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_user_addresses"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_user_addresses_after_insert` AFTER INSERT ON `tb_user_addresses` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Create',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('INSERT: ID=', NEW.ID, ', user_ID=', NEW.user_ID, ', label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL')),\n        1,\n        'tb_user_addresses'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_user_addresses_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_user_addresses"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_user_addresses_after_update` AFTER UPDATE ON `tb_user_addresses` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Update',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [label=', OLD.address_label, ', recipient=', IFNULL(OLD.recipient_name, 'NULL'), '] | NUEVO: [label=', NEW.address_label, ', recipient=', IFNULL(NEW.recipient_name, 'NULL'), ']'),\n        1,\n        'tb_user_addresses'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tb_user_addresses_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tb_user_addresses"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tb_user_addresses_after_delete` AFTER DELETE ON `tb_user_addresses` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('DELETE: ID=', OLD.ID, ', user_ID=', OLD.user_ID, ', label=', OLD.address_label),\n        1,\n        'tb_user_addresses'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_users_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_users"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_users_after_insert` AFTER INSERT ON `tb_users` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Create', USER(), NOW(), CONCAT('Usuario creado. ID=', NEW.id, ', email=', NEW.email), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_users_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_users"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_users_after_update` AFTER UPDATE ON `tb_users` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Update', USER(), NOW(), CONCAT('Usuario actualizado. ID=', NEW.id, ', email=', NEW.email), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trq_users_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_users"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trq_users_after_delete` AFTER DELETE ON `tb_users` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tb_users', 'Delete', USER(), NOW(), CONCAT('Usuario eliminado. ID=', OLD.id, ', email=', OLD.email), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_payment_methods_types_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbc_payment_methods_types"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_payment_methods_types_after_insert` AFTER INSERT ON `tbc_payment_methods_types` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Tipo de método de pago creado. ID: ', NEW.ID, ', Nombre: ', NEW.name), 1, 'tbc_payment_methods_types');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_payment_methods_types_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbc_payment_methods_types"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_payment_methods_types_after_update` AFTER UPDATE ON `tbc_payment_methods_types` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Tipo de método de pago modificado. ID: ', NEW.ID, ', Nombre: ', NEW.name), 1, 'tbc_payment_methods_types');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbc_payment_methods_types_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbc_payment_methods_types"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbc_payment_methods_types_after_delete` AFTER DELETE ON `tbc_payment_methods_types` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Tipo de método de pago eliminado. ID: ', OLD.ID, ', Nombre: ', OLD.name), 1, 'tbc_payment_methods_types');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_address_components_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tbd_address_components"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_address_components_after_insert` AFTER INSERT ON `tbd_address_components` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Create',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('INSERT: ID=', NEW.ID, ', address_ID=', NEW.address_ID, ', type=', NEW.component_type, ', value=', NEW.value),\n        1,\n        'tbd_address_components'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_address_components_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tbd_address_components"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_address_components_after_update` AFTER UPDATE ON `tbd_address_components` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Update',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('UPDATE: ID=', NEW.ID, ' | ANTERIOR: [type=', OLD.component_type, ', value=', OLD.value, '] | NUEVO: [type=', NEW.component_type, ', value=', NEW.value, ']'),\n        1,\n        'tbd_address_components'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_address_components_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tb_logs",
+      "tbd_address_components"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_address_components_after_delete` AFTER DELETE ON `tbd_address_components` FOR EACH ROW BEGIN\n    INSERT INTO `tb_logs` (\n        `table_operation`,\n        `db_user`,\n        `operation_date`,\n        `table_description`,\n        `operation_status`,\n        `table_name`\n    ) VALUES (\n        'Delete',\n        CURRENT_USER(),\n        NOW(),\n        CONCAT('DELETE: ID=', OLD.ID, ', address_ID=', OLD.address_ID, ', type=', OLD.component_type, ', value=', OLD.value),\n        1,\n        'tbd_address_components'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_cancellation_items_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_cancellation_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_cancellation_items_after_insert` AFTER INSERT ON `tbd_cancellation_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Ítem cancelado agregado. ID: ', NEW.id, ', Cancellation_ID: ', NEW.cancellation_id, ', Cantidad: ', NEW.quantity), 1, 'tbd_cancellation_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_cancellation_items_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_cancellation_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_cancellation_items_after_update` AFTER UPDATE ON `tbd_cancellation_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Ítem cancelado modificado. ID: ', NEW.id, ', Cantidad previa: ', OLD.quantity, ' -> Nueva cantidad: ', NEW.quantity), 1, 'tbd_cancellation_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_cancellation_items_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_cancellation_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_cancellation_items_after_delete` AFTER DELETE ON `tbd_cancellation_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Ítem cancelado eliminado. ID: ', OLD.id, ', Cancellation_ID: ', OLD.cancellation_id), 1, 'tbd_cancellation_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_carts_items_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_carts_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_carts_items_after_insert` AFTER INSERT ON `tbd_carts_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Ítem agregado al carrito. Cart_ID: ', NEW.cart_ID, ', Product_ID: ', NEW.product_ID, ', Cantidad: ', NEW.quantity), 1, 'tbd_carts_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_carts_items_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_carts_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_carts_items_after_update` AFTER UPDATE ON `tbd_carts_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Ítem de carrito modificado. Cart_ID: ', NEW.cart_ID, ', Product_ID: ', NEW.product_ID, ', Cantidad previa: ', OLD.quantity, ' -> Nueva cantidad: ', NEW.quantity), 1, 'tbd_carts_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_carts_items_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_carts_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_carts_items_after_delete` AFTER DELETE ON `tbd_carts_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Ítem eliminado del carrito. Cart_ID: ', OLD.cart_ID, ', Product_ID: ', OLD.product_ID), 1, 'tbd_carts_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_order_items_before_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_order_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_order_items_before_update` BEFORE UPDATE ON `tbd_order_items` FOR EACH ROW BEGIN\n    IF NEW.quantity <> OLD.quantity OR NEW.unit_price <> OLD.unit_price THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'No se permite modificar la cantidad ni el precio unitario de un ítem ya comprado.';\n    END IF;\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_order_items_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_order_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_order_items_after_update` AFTER UPDATE ON `tbd_order_items` FOR EACH ROW BEGIN\n    SET @last_order_item_action = CONCAT('Ítem de orden ID ', NEW.ID, ' (Orden ', NEW.seller_order_ID, ') actualizado.');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_order_items_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_order_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_order_items_after_delete` AFTER DELETE ON `tbd_order_items` FOR EACH ROW BEGIN\n    SET @last_order_item_action = CONCAT('Ítem ', OLD.product_name, ' (ID ', OLD.ID, ') fue removido de la orden ', OLD.seller_order_ID);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_products_categories_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_products_categories_after_insert` AFTER INSERT ON `tbd_products_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Create', USER(), NOW(), CONCAT('Categorización creada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_products_categories_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_products_categories_after_update` AFTER UPDATE ON `tbd_products_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Update', USER(), NOW(), CONCAT('Categorización actualizada. ID=', NEW.product_ID, ', Category_ID=', NEW.category_ID), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_products_categories_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_categories"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_products_categories_after_delete` AFTER DELETE ON `tbd_products_categories` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_name, table_operation, db_user, operation_date, table_description, operation_status)\n    VALUES ('tbd_products_categories', 'Delete', USER(), NOW(), CONCAT('Categorización eliminada. ID=', OLD.product_ID, ', Category_ID=', OLD.category_ID), 1);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_providers_before_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_users_providers"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_providers_before_update` BEFORE UPDATE ON `tbd_products_users_providers` FOR EACH ROW BEGIN    \n    SET NEW.last_update = NOW();\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_providers_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_users_providers"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_providers_after_update` AFTER UPDATE ON `tbd_products_users_providers` FOR EACH ROW BEGIN\n    SET @last_provider_action = CONCAT('Relaciones proveedor/usuario actualizadas para usuario ', NEW.user_ID, ' y producto ', NEW.product_ID);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_providers_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_products_users_providers"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_providers_after_delete` AFTER DELETE ON `tbd_products_users_providers` FOR EACH ROW BEGIN\n    SET @last_provider_action = CONCAT('Relación eliminada entre usuario ', OLD.user_ID, ' y producto ', OLD.product_ID);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_return_items_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_return_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_return_items_after_insert` AFTER INSERT ON `tbd_return_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Ítem devuelto agregado. ID: ', NEW.id, ', Return_ID: ', NEW.return_id, ', Cantidad: ', NEW.quantity), 1, 'tbd_return_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_return_items_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_return_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_return_items_after_update` AFTER UPDATE ON `tbd_return_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('UPDATE', USER(), NOW(), CONCAT('Ítem devuelto modificado. ID: ', NEW.id, ', Cantidad previa: ', OLD.quantity, ' -> Nueva cantidad: ', NEW.quantity), 1, 'tbd_return_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_return_items_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_return_items"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_return_items_after_delete` AFTER DELETE ON `tbd_return_items` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('DELETE', USER(), NOW(), CONCAT('Ítem devuelto eliminado. ID: ', OLD.id, ', Return_ID: ', OLD.return_id), 1, 'tbd_return_items');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_user_payment_methods_after_insert",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_user_payment_methods"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_user_payment_methods_after_insert` AFTER INSERT ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO tb_logs (table_operation, db_user, operation_date, table_description, operation_status, table_name)\n    VALUES ('CREATE', USER(), NOW(), CONCAT('Método de pago de usuario registrado. ID: ', NEW.ID, ', User_ID: ', NEW.user_ID, ', Provider: ', NEW.provider), 1, 'tbd_user_payment_methods');\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_user_payment_methods_au",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_user_payment_methods",
+      "tbd_user_payment_methods_history"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_user_payment_methods_au` AFTER UPDATE ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO `tbd_user_payment_methods_history` (\n        `payment_method_ID`,\n        `user_ID`,\n        `payment_method_type_ID`,\n        `provider`,\n        `provider_method_ref`,\n        `label`,\n        `last_four`,\n        `is_default`,\n        `status`,\n        `action_type`\n    ) VALUES (\n        NEW.`ID`,\n        NEW.`user_ID`,\n        NEW.`payment_method_type_ID`,\n        NEW.`provider`,\n        NEW.`provider_method_ref`,\n        NEW.`label`,\n        NEW.`last_four`,\n        NEW.`is_default`,\n        NEW.`status`,\n        'UPDATE'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_tbd_user_payment_methods_ad",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_user_payment_methods",
+      "tbd_user_payment_methods_history"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_tbd_user_payment_methods_ad` AFTER DELETE ON `tbd_user_payment_methods` FOR EACH ROW BEGIN\n    INSERT INTO `tbd_user_payment_methods_history` (\n        `payment_method_ID`,\n        `user_ID`,\n        `payment_method_type_ID`,\n        `provider`,\n        `provider_method_ref`,\n        `label`,\n        `last_four`,\n        `is_default`,\n        `status`,\n        `action_type`\n    ) VALUES (\n        OLD.`ID`,\n        OLD.`user_ID`,\n        OLD.`payment_method_type_ID`,\n        OLD.`provider`,\n        OLD.`provider_method_ref`,\n        OLD.`label`,\n        OLD.`last_four`,\n        OLD.`is_default`,\n        OLD.`status`,\n        'DELETE'\n    );\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_wishlist_before_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_users_wishlist_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_wishlist_before_update` BEFORE UPDATE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN    \n    SET NEW.last_update = NOW();\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_wishlist_after_update",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_users_wishlist_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_wishlist_after_update` AFTER UPDATE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN\n    SET @last_wishlist_action = CONCAT('Producto ', NEW.product_ID, ' del usuario ', NEW.user_ID, ' actualizado a status: ', NEW.status);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  },
+  {
+    "name": "trg_wishlist_after_delete",
+    "type": "TRIGGER",
+    "definer": "root@localhost",
+    "parameters": [],
+    "impactedTables": [
+      "tbd_users_wishlist_products"
+    ],
+    "transactionHandling": false,
+    "source": "/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_wishlist_after_delete` AFTER DELETE ON `tbd_users_wishlist_products` FOR EACH ROW BEGIN\n    SET @last_wishlist_action = CONCAT('Producto ', OLD.product_ID, ' removido de la lista de deseos del usuario ', OLD.user_ID);\nEND */",
+    "explanation": "Trigger asociado a la tabla indicada; efectos adicionales inferidos de las referencias en su cuerpo SQL."
+  }
+]
