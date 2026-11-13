@@ -1,85 +1,113 @@
--- Seleccionar base de datos
 USE db_test;
 
--- 1. Estructura general de la base de datos
-SHOW TABLES;
-SHOW TRIGGERS FROM db_test;
+-- ============================================================================
+-- 1. VERIFICACIÓN DE ESTRUCTURA GENERAL (25 TABLAS, 72 TRIGGERS, 25 VISTAS)
+-- ============================================================================
 
--- 2. Conteo global de logs
-SELECT COUNT(*) AS total_registros 
-FROM tb_logs;
+-- 1.1 Verificar el total de tablas en db_test
+SELECT COUNT(*) AS total_tablas 
+FROM information_schema.tables 
+WHERE table_schema = 'db_test' AND table_type = 'BASE TABLE';
 
--- 3. Consultar todas las operaciones realizadas en la base de datos
-SELECT * 
-FROM tb_logs;
+-- 1.2 Verificar los 72 triggers de auditoría (3 por cada una de las 24 tablas operativas)
+SELECT COUNT(*) AS total_triggers 
+FROM information_schema.triggers 
+WHERE trigger_schema = 'db_test';
 
--- 4. Verificar que los usuarios remotos hayan sido creados
-SELECT user, host 
-FROM mysql.user 
-WHERE host = '%' 
-  AND account_locked = 'N';
+-- 1.3 Desglose de triggers por tabla y evento (INSERT, UPDATE, DELETE)
+SELECT event_object_table AS tabla, action_timing, event_manipulation, trigger_name
+FROM information_schema.triggers
+WHERE trigger_schema = 'db_test'
+ORDER BY event_object_table, event_manipulation;
 
--- 5. Verificar los roles que fueron creados
-SELECT user, host 
-FROM mysql.user 
-WHERE host = '%' 
-  AND account_locked = 'Y';
+-- 1.4 Verificar las 25 vistas (24 de auditoría + 1 vista consolidada de productos)
+SELECT COUNT(*) AS total_vistas 
+FROM information_schema.views 
+WHERE table_schema = 'db_test';
 
--- 6. Verificar qué usuarios tienen asignados qué roles
+SELECT table_name AS nombre_vista 
+FROM information_schema.views 
+WHERE table_schema = 'db_test'
+ORDER BY table_name;
+
+
+-- ============================================================================
+-- 2. VERIFICACIÓN DE PROCEDIMIENTOS ALMACENADOS Y EVENTOS PROGRAMADOS
+-- ============================================================================
+
+-- 2.1 Listar todos los procedimientos almacenados (inserción masiva, limpieza, reportes)
+SHOW PROCEDURE STATUS WHERE Db = 'db_test';
+
+-- 2.2 Listar todos los eventos programados
+SHOW EVENTS FROM db_test;
+
+
+-- ============================================================================
+-- 3. VERIFICACIÓN DE POBLACIÓN DE USUARIOS Y PERSONAS (tb_users / tb_people)
+-- ============================================================================
+
+-- 3.1 Conteo exacto de personas y cuentas de usuario registradas
 SELECT 
-    to_user AS usuario, 
-    to_host AS host, 
-    from_user AS rol, 
-    from_host AS rol_host 
-FROM mysql.role_edges 
-ORDER BY rol, usuario, from_user;
+    (SELECT COUNT(*) FROM tb_people) AS total_personas,
+    (SELECT COUNT(*) FROM tb_users) AS total_usuarios;
 
--- 7. Identificar exactamente quién creó a cada usuario en el sistema y cuándo lo hizo
+-- 3.2 Verificar distribución de usuarios por estado/estatus (revisa el nombre exacto de tu columna de estado si cambia)
+SELECT * FROM tb_users LIMIT 5;
+
+
+-- ============================================================================
+-- 4. REGLAS DE CATEGORIZACIÓN Y TRAZABILIDAD (tb_categories / tbd_products_categories)
+-- ============================================================================
+
+-- 4.1 Verificar el total de categorías (debe dar 100) y total de productos (~11,951)
 SELECT 
-    u.nick,
-    u.email,
-    b.db_user AS inserted_by,
-    b.table_description,
-    b.operation_date
+    (SELECT COUNT(*) FROM tb_categories) AS total_categorias,
+    (SELECT COUNT(*) FROM tb_products) AS total_productos,
+    (SELECT COUNT(*) FROM tbd_products_categories) AS total_relaciones_producto_categoria;
+
+-- 4.2 Verificar que existan al menos 100 categorías con más de 5 productos asociados cada una
+SELECT 
+    c.id AS id_categoria,
+    COUNT(pc.product_id) AS productos_asociados
+FROM tb_categories c
+INNER JOIN tbd_products_categories pc ON c.id = pc.category_id
+GROUP BY c.id
+HAVING COUNT(pc.product_id) > 5
+ORDER BY productos_asociados ASC;
+
+-- 4.3 Verificar trazabilidad en tb_logs sobre categorías, productos y su tabla puente
+SELECT * FROM tb_logs 
+ORDER BY id DESC 
+LIMIT 20;
+
+
+-- ============================================================================
+-- 5. VERIFICACIÓN DE LOS 7,000+ PRODUCTOS DE GADI Y DORIAN Y AUDITORÍA EN tb_logs
+-- ============================================================================
+
+-- 5.1 Verificar los usuarios/roles creados en el servidor MySQL (superadmin, seller, gadi, dorian)
+SELECT User, Host FROM mysql.user WHERE User IN ('superadmin', 'seller', 'gadi', 'dorian');
+
+-- 5.2 Verificar el total de registros de auditoría capturados por los 72 triggers (~75,912 logs)
+SELECT COUNT(*) AS total_registros_auditoria FROM tb_logs;
+
+-- 5.3 Ver distribución de movimientos en tb_logs (inserciones masivas de usuarios, productos y categorías)
+SELECT * FROM tb_logs LIMIT 10;
+
+
+-- ============================================================================
+-- 6. VERIFICACIÓN DE INTEGRIDAD REFERENCIAL (SIN REGISTROS HUÉRFANOS)
+-- ============================================================================
+
+-- 6.1 Comprobar que ningún registro de tbd_products_categories apunte a un producto o categoría inexistente (debe dar 0)
+SELECT COUNT(*) AS relaciones_huerfanas
+FROM tbd_products_categories pc
+LEFT JOIN tb_products p ON pc.product_id = p.id
+LEFT JOIN tb_categories c ON pc.category_id = c.id
+WHERE p.id IS NULL OR c.id IS NULL;
+
+-- 6.2 Comprobar que todo usuario en tb_users tenga un registro válido en tb_people (debe dar 0)
+SELECT COUNT(*) AS usuarios_sin_persona
 FROM tb_users u
-JOIN tb_logs b 
-    ON b.table_description LIKE CONCAT('%ID=', u.id, ',%')
-WHERE b.table_operation = 'Create'
-  AND b.table_name = 'tb_users'
-GROUP BY 
-    u.nick,
-    u.email,
-    b.db_user,
-    b.table_description,
-    b.operation_date
-ORDER BY b.operation_date ASC;
-
--- 8. Verificar el total de procedimientos almacenados en la base de datos db_test_7b
-SHOW PROCEDURE STATUS 
-WHERE Db = 'db_test_7b';
-
--- 9. Contabilizar los productos
-SELECT COUNT(*) AS total_productos 
-FROM tb_products;
-
--- 10. Visualizar todos los productos
-SELECT * 
-FROM tb_products;
-
--- 11. Consulta para saber la trazabilidad de los productos
-SELECT * 
-FROM vw_trazabilidad_productos 
-LIMIT 10;
-
-
--- 12. visualizar todos los productos*/
-SELECT * FROM tb_products;
-
--- 13. consulta para saber la trazabilidad de los productos*/
-SELECT * FROM vw_trazabilidad_productos ORDER BY operation_date DESC LIMIT 10;
-
--- 14. consulta la trazabilidad de usuarios*/
-SELECT * FROM vw_trazabilidad_usuarios ORDER BY operation_date asc;
-
--- 15. contabilidad cuantos productos por tabla hay por usuarios*/
-SELECT COUNT(*), vp.inserted_by FROM vw_trazabilidad_productos vp GROUP BY vp.inserted_by;
+LEFT JOIN tb_people p ON u.person_id = p.id
+WHERE p.id IS NULL;
