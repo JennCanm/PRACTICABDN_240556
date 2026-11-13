@@ -9,7 +9,8 @@ SHOW TRIGGERS FROM db_test;
 SELECT COUNT(*) AS total_registros 
 FROM tb_logs;
 
--- 3. Consultar todas las operaciones realizadas en la base de datos
+
+-- 3. jenn Consultar todas las operaciones realizadas en la base de datos
 SELECT * 
 FROM tb_logs;
 
