@@ -1,72 +1,140 @@
--- Seleccionar base de datos
 USE db_test;
 
--- 1. Estructura general de la base de datos
-SHOW TABLES;
-SHOW TRIGGERS FROM db_test;
+-- ============================================================================
+-- PUNTO 1 Y 2: ESTRUCTURA GENERAL (25 TABLAS, 72 TRIGGERS, 25 VISTAS)
+-- ============================================================================
 
--- 2. Conteo global de logs
-SELECT COUNT(*) AS total_registros 
-FROM tb_logs;
+-- 1.1 Verificar el total de tablas base en db_test (debe devolver 25)
+SELECT COUNT(*) AS total_tablas 
+FROM information_schema.tables 
+WHERE table_schema = 'db_test' AND table_type = 'BASE TABLE';
 
--- 3. Consultar todas las operaciones realizadas en la base de datos
-SELECT * 
-FROM tb_logs;
+-- 1.2 Verificar los 72 triggers de auditoría (3 por cada una de las 24 tablas)
+SELECT COUNT(*) AS total_triggers 
+FROM information_schema.triggers 
+WHERE trigger_schema = 'db_test';
 
--- 4. Verificar que los usuarios remotos hayan sido creados
-SELECT user, host 
-FROM mysql.user 
-WHERE host = '%' 
-  AND account_locked = 'N';
+-- 1.3 Desglose de triggers por tabla y evento (INSERT, UPDATE, DELETE)
+SELECT event_object_table AS tabla, action_timing, event_manipulation, trigger_name
+FROM information_schema.triggers
+WHERE trigger_schema = 'db_test'
+ORDER BY event_object_table, event_manipulation;
 
--- 5. Verificar los roles que fueron creados
-SELECT user, host 
-FROM mysql.user 
-WHERE host = '%' 
-  AND account_locked = 'Y';
+-- 1.4 Verificar las 25 vistas (24 de trazabilidad + 1 vista consolidada de productos)
+SELECT COUNT(*) AS total_vistas 
+FROM information_schema.views 
+WHERE table_schema = 'db_test';
 
--- 6. Verificar qué usuarios tienen asignados qué roles
+SELECT table_name AS nombre_vista 
+FROM information_schema.views 
+WHERE table_schema = 'db_test'
+ORDER BY table_name;
+
+
+-- ============================================================================
+-- PUNTO 3 Y 4: PROCEDIMIENTOS ALMACENADOS, EVENTOS Y SIMULACIÓN DE 7,500 USUARIOS
+-- ============================================================================
+
+-- 3.1 Listar todos los procedimientos almacenados (inserción masiva, limpieza, reportes)
+SHOW PROCEDURE STATUS WHERE Db = 'db_test';
+
+-- 3.2 Listar los eventos programados (automatización / mantenimiento)
+SHOW EVENTS FROM db_test;
+
+-- 3.3 Verificar la población de los 7,500 usuarios distribuidos en los 3 escenarios
+SELECT COUNT(*) AS total_usuarios FROM usuarios;
+SELECT COUNT(*) AS total_clientes FROM clientes;
+
+-- 3.4 Verificar distribución de usuarios por rol/perfil o estado
+SELECT estatus, COUNT(*) AS cantidad 
+FROM usuarios 
+GROUP BY estatus;
+
+
+-- ============================================================================
+-- PUNTO 5 Y 6: REGLAS DE NEGOCIO DE CATEGORIZACIÓN Y TRAZABILIDAD DE PRODUCTOS
+-- ============================================================================
+
+-- 5.1 Verificar que existan al menos 100 categorías activas con más de 5 productos cada una
 SELECT 
-    to_user AS usuario, 
-    to_host AS host, 
-    from_user AS rol, 
-    from_host AS rol_host 
-FROM mysql.role_edges 
-ORDER BY rol, usuario, from_user;
+    c.id_categoria, 
+    c.nombre AS categoria, 
+    COUNT(p.id_producto) AS total_productos
+FROM categorias c
+INNER JOIN productos p ON c.id_categoria = p.id_categoria
+GROUP BY c.id_categoria, c.nombre
+HAVING COUNT(p.id_producto) > 5
+ORDER BY total_productos ASC;
 
--- 7. Identificar exactamente quién creó a cada usuario en el sistema y cuándo lo hizo
+-- 5.2 Conteo total de categorías que cumplen la regla (>= 100 categorías con > 5 productos)
+SELECT COUNT(*) AS categorias_validas
+FROM (
+    SELECT id_categoria
+    FROM productos
+    GROUP BY id_categoria
+    HAVING COUNT(*) > 5
+) AS sub;
+
+-- 5.3 Verificar la trazabilidad de categorización (historial de cambios de categoría/estatus)
+SELECT * FROM bitacora_auditoria 
+WHERE tabla_afectada IN ('categorias', 'productos') 
+ORDER BY fecha_hora DESC 
+LIMIT 20;
+
+-- 5.4 Consultar la vista consolidada de catálogo y categorización de productos
+SELECT * FROM vw_catalogo_productos LIMIT 15;
+
+
+-- ============================================================================
+-- PUNTO 7 Y 8: VERIFICACIÓN DE LOS 7,000+ PRODUCTOS DE GADI Y DORIAN Y ROLES
+-- ============================================================================
+
+-- 7.1 Verificar que existan los usuarios/colaboradores Gadi y Dorian (o roles superadmin/seller)
+SELECT User, Host FROM mysql.user WHERE User IN ('superadmin', 'seller', 'gadi', 'dorian');
+
+-- 7.2 Verificar el total global de productos registrados (debe superar los 7,000)
+SELECT COUNT(*) AS total_productos_registrados FROM productos;
+
+-- 7.3 Verificar la autoría y trazabilidad de los ~7,000 productos agregados por Gadi y Dorian
 SELECT 
-    u.nick,
-    u.email,
-    b.db_user AS inserted_by,
-    b.table_description,
-    b.operation_date
-FROM tb_users u
-JOIN tb_logs b 
-    ON b.table_description LIKE CONCAT('%ID=', u.id, ',%')
-WHERE b.table_operation = 'Create'
-  AND b.table_name = 'tb_users'
-GROUP BY 
-    u.nick,
-    u.email,
-    b.db_user,
-    b.table_description,
-    b.operation_date
-ORDER BY b.operation_date ASC;
+    usuario,
+    accion,
+    COUNT(*) AS total_productos_procesados,
+    MIN(fecha_hora) AS inicio_carga,
+    MAX(fecha_hora) AS fin_carga
+FROM bitacora_auditoria
+WHERE tabla_afectada = 'productos' 
+  AND accion = 'INSERT'
+GROUP BY usuario, accion
+ORDER BY total_productos_procesados DESC;
 
--- 8. Verificar el total de procedimientos almacenados en la base de datos db_test_7b
-SHOW PROCEDURE STATUS 
-WHERE Db = 'db_test_7b';
+-- 7.4 Verificar que no existan productos o categorías huérfanas tras las cargas masivas
+SELECT COUNT(*) AS productos_sin_categoria
+FROM productos p
+LEFT JOIN categorias c ON p.id_categoria = c.id_categoria
+WHERE c.id_categoria IS NULL;
 
--- 9. Contabilizar los productos
-SELECT COUNT(*) AS total_productos 
-FROM tb_products;
 
--- 10. Visualizar todos los productos
-SELECT * 
-FROM tb_products;
+-- ============================================================================
+-- PUNTO 9 Y 10: AUDITORÍA GLOBAL POR TABLA, PEDIDOS E INTEGRIDAD TRANSACCIONAL
+-- ============================================================================
 
--- 11. Consulta para saber la trazabilidad de los productos
-SELECT * 
-FROM vw_trazabilidad_productos 
-LIMIT 10;
+-- 9.1 Resumen general de auditoría capturada por los 72 triggers en todas las tablas
+SELECT 
+    tabla_afectada, 
+    accion, 
+    COUNT(*) AS total_movimientos
+FROM bitacora_auditoria
+GROUP BY tabla_afectada, accion
+ORDER BY tabla_afectada, accion;
+
+-- 9.2 Verificar pedidos, detalles y movimientos transaccionales generados
+SELECT 
+    (SELECT COUNT(*) FROM pedidos) AS total_pedidos,
+    (SELECT COUNT(*) FROM detalle_pedidos) AS total_detalles_pedido,
+    (SELECT COUNT(*) FROM pagos) AS total_pagos,
+    (SELECT COUNT(*) FROM envios) AS total_envios;
+
+-- 9.3 Verificar normalidad en los estados de pedidos y productos (sin nulos ni cadenas vacías)
+SELECT estatus, COUNT(*) AS cantidad FROM pedidos GROUP BY estatus;
+SELECT estatus, COUNT(*) AS cantidad FROM productos GROUP BY estatus;
