@@ -27,16 +27,18 @@ SELECT
     u.id AS user_id,
     u.email,
     u.nick,
-    p.first_name,
-    p.last_name,
+    p.given_names,
+    p.family_names,
     upm.provider,
     upm.provider_method_ref AS tarjeta_16_digitos,
     ua.address_label AS domicilio_entrega
 FROM tb_users u
-INNER JOIN tb_people p ON u.id = p.user_id
-LEFT JOIN tbd_user_payment_methods upm ON u.id = upm.user_ID
-LEFT JOIN tb_user_addresses ua ON u.id = ua.user_ID
-WHERE u.email = 'carlos.mendoza.p4@gmail.com';
+INNER JOIN tb_people p ON u.id = p.user_ID
+INNER JOIN tbd_user_payment_methods upm ON u.id = upm.user_ID
+INNER JOIN tb_user_addresses ua ON u.id = ua.user_ID
+WHERE upm.payment_method_type_ID = 1
+ORDER BY u.id DESC
+LIMIT 1;
 
 SELECT 
     oi.seller_order_ID AS order_id,
@@ -47,9 +49,11 @@ SELECT
     oi.subtotal
 FROM tbd_order_items oi
 WHERE oi.seller_order_ID = (
-    SELECT pt.order_id FROM tb_payment_transaction pt
-    INNER JOIN tb_users u ON pt.user_id = u.id
-    WHERE u.email = 'carlos.mendoza.p4@gmail.com'
+    SELECT pt.order_id 
+    FROM tb_payment_transaction pt
+    INNER JOIN tbd_user_payment_methods upm ON pt.user_id = upm.user_ID
+    WHERE upm.payment_method_type_ID = 1
+    ORDER BY pt.id ASC
     LIMIT 1
 );
 
@@ -195,6 +199,6 @@ SELECT
     operation_date,
     table_name,
     table_description
-FROM tb_binnacle
+FROM tb_logs
 ORDER BY ID DESC
 LIMIT 15;
