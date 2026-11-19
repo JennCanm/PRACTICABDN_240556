@@ -13,7 +13,7 @@ SET @c3_user_id = (
     ORDER BY id ASC LIMIT 1 OFFSET 10
 );
 
--- Buscamos una categoría que tenga al menos 3 productos con proveedor asignado y stock >= 20
+-- Buscamos una categoría con al menos 3 productos disponibles con proveedor asignado
 SET @c3_cat_id = (
     SELECT pc.category_ID
     FROM tbd_products_categories pc
@@ -141,7 +141,6 @@ SET @c3_payment_id = LAST_INSERT_ID();
 
 UPDATE tb_buyer_orders SET fulfillment_status = 'Accepted', last_update = NOW() WHERE ID = @c3_order_id;
 
--- Descontamos inventario inicial de los 3 productos
 UPDATE tb_products p
 INNER JOIN tbd_order_items oi ON p.id = oi.product_ID
 SET p.current_stock = p.current_stock - oi.quantity,
@@ -175,6 +174,7 @@ INSERT INTO tbd_cancellation_items (
 
 -- ----------------------------------------------------------------------------
 -- PASO 8: El sistema actualiza la orden de compra y reintegra el stock cancelado
+-- (tbd_order_items queda intacto por trigger de inmutabilidad histórica)
 -- ----------------------------------------------------------------------------
 UPDATE tb_products
 SET current_stock = current_stock + @c3_cancel_qty,
@@ -186,6 +186,7 @@ SET subtotal = @c3_subtotal_inicial - @c3_refund_amount,
     fulfillment_status = 'Preparing',
     last_update = NOW()
 WHERE ID = @c3_order_id;
+
 -- ----------------------------------------------------------------------------
 -- PASO 9: El sistema realiza el reembolso parcial del monto del producto cancelado
 -- ----------------------------------------------------------------------------
