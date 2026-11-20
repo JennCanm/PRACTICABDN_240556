@@ -20,7 +20,7 @@ FROM tb_buyer_orders bo
 ORDER BY bo.ID ASC;
 
 -- ============================================================================
--- CASO DE PRUEBA 1: "Compra Exitosa, sin modificaciones"
+-- CASO DE PRUEBA 1: "Compra Exitosa, sin modificaciones --"
 -- (Usuario nuevo, 5 productos, débito 16 dígitos, pago único, entrega en hogar)
 -- ============================================================================
 SELECT 
